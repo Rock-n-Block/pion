@@ -1,0 +1,103 @@
+@import './styles/fonts';
+@import './styles/var';
+@import '~antd/dist/antd.css';
+
+* {
+  box-sizing: border-box;
+}
+
+.row {
+  max-width: 1220px;
+  width: 100%;
+  padding: 0 10px;
+  margin: 0 auto;
+}
+body {
+  background-color: #040302;
+  background-image: url(./assets/img/bg-1.svg), url(./assets/img/bg-2.svg);
+  background-repeat: no-repeat;
+  background-position: left top, right 160px;
+  min-height: 100vh;
+  margin: 0;
+  padding: 80px 0 40px;
+  height: fit-content;
+}
+
+.btn {
+  background: $orange;
+  color: white;
+  padding: 80px 0;
+  font-size: 14px;
+  line-height: 17px;
+  padding: 8px 22px;
+  font-family: MonS;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 4px;
+  &--big {
+    padding: 13px 25px;
+    width: 100%;
+    text-transform: uppercase;
+    font-family: MonB;
+  }
+}
+
+p {
+  margin: 0;
+}
+
+.pion {
+  &__content {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}
+.nav-item {
+  position: relative;
+  color: $text;
+  cursor: pointer;
+  &.active {
+    color: $orange;
+    opacity: 1;
+    font-family: MonB;
+  }
+  & + & {
+    transition: 0.3s;
+    &::after {
+      background: #8e8e93;
+      width: 1px;
+      content: '';
+      height: 16px;
+      position: absolute;
+      top: 50%;
+      left: -0.5px;
+      transform: translateY(-50%);
+      opacity: 0.3;
+      border-radius: 0.5px;
+    }
+  }
+}
+
+input {
+  border: none;
+  background: transparent;
+  font-size: 33px;
+  line-height: 40px;
+  color: white;
+  &:focus {
+    outline: none;
+  }
+  &::placeholder {
+    color: #fff;
+  }
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}

@@ -1,0 +1,43 @@
+@import '../../styles/var.scss';
+.deposit {
+  &__rewards {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 27px 23px;
+    display: flex;
+    align-items: center;
+    margin: 20px 0 30px;
+    img {
+      margin-right: 15px;
+    }
+    &-title {
+      font-size: 12px;
+      line-height: 15px;
+      color: white;
+      margin-bottom: 5px;
+      font-family: MonM;
+    }
+    &-content {
+      font-size: 16px;
+      line-height: 20px;
+      color: $orange;
+      font-family: MonB;
+    }
+  }
+  &__amount {
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    padding: 20px;
+    font-family: MonM;
+    &-head {
+      font-size: 12px;
+      line-height: 15px;
+      color: $text;
+      display: flex;
+      justify-content: space-between;
+    }
+    &-input {
+      margin-top: 5px;
+    }
+  }
+}

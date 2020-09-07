@@ -1,0 +1,56 @@
+@import '../../styles/var.scss';
+.stake {
+  &__navbar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    margin: 20px 0;
+    &-tab {
+      text-align: center;
+      padding: 11px 0;
+      font-size: 16px;
+      line-height: 20px;
+      font-family: MonS;
+    }
+  }
+  &__inf {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 15px;
+    &-item {
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-sizing: border-box;
+      position: relative;
+      border-radius: 4px;
+      padding: 10px;
+      font-family: MonM;
+      &-tooltip {
+        position: absolute;
+        top: 7px;
+        right: 7px;
+      }
+      &-title {
+        font-size: 12px;
+        line-height: 15px;
+        color: $text;
+      }
+      &-content {
+        color: $orange;
+        font-size: 16px;
+        line-height: 20px;
+        font-family: MonB;
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        span {
+          font-size: 10px;
+          line-height: 12px;
+          color: $text;
+          margin-left: 5px;
+          font-family: MonM;
+        }
+      }
+    }
+  }
+}

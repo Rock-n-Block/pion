@@ -1,0 +1,11 @@
+.withdraw {
+  &__wrapper {
+    display: flex;
+  }
+  &__rewards {
+    width: 100%;
+    & + & {
+      margin-left: 20px;
+    }
+  }
+}

@@ -1,24 +1,28 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+
+import { Header, Navbar, Swap, Stake } from './components';
+
+import './App.scss'
 
 function App() {
+  const [activeTab, setActiveTab] = React.useState(0)
+
+  const onSelect = (tabIndex) => {
+    setActiveTab(tabIndex)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="pion">
+      <Header />
+      <div className="pion__content">
+        <Navbar activeTab={activeTab} onSelect={onSelect} />
+        {
+          activeTab === 0 && <Swap />
+        }
+        {
+          activeTab === 1 && <Stake />
+        }
+      </div>
     </div>
   );
 }
