@@ -2,7 +2,8 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Switch } from 'antd';
 
-import { themeActions } from '../../redux/actions';
+import { themeActions, userActions, modalActions } from '../../redux/actions';
+import MetamaskService from '../../utils/web3';
 
 import Logo from '../../assets/img/logo.svg';
 import MetamaskImg from '../../assets/img/metamask.svg';
@@ -12,7 +13,7 @@ import MoonImg from '../../assets/img/sun.svg';
 
 import './Header.scss'
 
-const Header = ({ getAccounts }) => {
+const Header = () => {
     const dispatch = useDispatch()
     const { address, errorCode, lightTheme } = useSelector((state) => {
         return {
@@ -25,6 +26,21 @@ const Header = ({ getAccounts }) => {
     const onChange = (checked) => {
         dispatch(themeActions.toggleTheme(!checked))
     }
+
+    const getAccounts = () => {
+        const metamask = new MetamaskService()
+
+        metamask.getAccounts().then(res => {
+
+            dispatch(userActions.setUserData(res))
+            dispatch(modalActions.toggleModal(false))
+        }).catch(err => {
+
+            dispatch(userActions.setUserData(err))
+            dispatch(modalActions.toggleModal(true))
+        })
+    }
+
 
     return (
         <header className="header">
