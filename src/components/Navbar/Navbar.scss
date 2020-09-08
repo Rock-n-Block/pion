@@ -7,7 +7,7 @@
   &__item {
     font-size: 16px;
     line-height: 20px;
-    font-family: MonR;
+    font-family: MonB;
     transition: 0.3s;
     color: #fff;
     opacity: 0.5;
@@ -28,11 +28,21 @@
       bottom: 0;
     }
     &.active {
-      font-family: MonB;
       opacity: 1;
       &::before {
         background: $orange;
       }
+    }
+  }
+}
+.lighttheme {
+  .navbar {
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    &__item {
+      color: $lighttext;
+      opacity: 1;
     }
   }
 }

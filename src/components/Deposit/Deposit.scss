@@ -41,3 +41,24 @@
     }
   }
 }
+.lighttheme {
+  .deposit {
+    &__amount {
+      background: #ffffff;
+      border: 1px solid rgba(74, 85, 104, 0.1);
+      box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.05);
+      border-radius: 12px;
+      span {
+        color: $lighttext;
+        opacity: 0.5;
+      }
+    }
+    &__rewards {
+      border: 1px solid rgba(74, 85, 104, 0.25);
+      border-radius: 12px;
+      &-title {
+        color: #000;
+      }
+    }
+  }
+}

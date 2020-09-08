@@ -1,12 +1,14 @@
 import React from 'react';
 import { Tooltip } from 'antd';
 import classNames from 'classnames';
+import { useSelector } from 'react-redux';
 
 import { Deposit, Withdraw, Stats } from '../../components';
 
 import './Stake.scss'
 
 import TooltipImg from '../../assets/img/tooltip.svg';
+import TooltipImgLight from '../../assets/img/tooltip-light.svg';
 
 const Stake = () => {
 
@@ -32,6 +34,8 @@ const Stake = () => {
 
     const [activeTab, setActiveTab] = React.useState(0)
 
+    const lightTheme = useSelector(({ theme }) => theme.lightTheme);
+
     return (
         <div className="stake">
             <div className="stake__inf">
@@ -46,7 +50,7 @@ const Stake = () => {
                                     {index === 2 ? <span> PION</span> : ''}
                                 </div>
                                 <Tooltip placement="top" title={item.tooltip} className="stake__inf-item-tooltip">
-                                    <img src={TooltipImg} alt="" />
+                                    {lightTheme ? <img src={TooltipImgLight} alt="" /> : <img src={TooltipImg} alt="" />}
                                 </Tooltip>
                             </div>
                         )
@@ -63,9 +67,9 @@ const Stake = () => {
                 }
             </div>
             <div className="stake__content">
-                {activeTab === 0 && <Deposit />}
-                {activeTab === 1 && <Withdraw />}
-                {activeTab === 2 && <Stats />}
+                {activeTab === 0 && <Deposit lightTheme={lightTheme} />}
+                {activeTab === 1 && <Withdraw lightTheme={lightTheme} />}
+                {activeTab === 2 && <Stats lightTheme={lightTheme} />}
             </div>
         </div>
     );

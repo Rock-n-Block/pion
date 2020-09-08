@@ -18,12 +18,20 @@
     }
   }
   &__select {
+    &-dropdown {
+      background: #1f1f1f !important;
+    }
     &-option {
       display: flex;
       align-items: center;
+      img {
+        margin-right: 10px;
+      }
       p {
+        font-family: MonB;
+      }
+      &-text {
         color: white;
-        margin-left: 10px;
         font-size: 16px;
         line-height: 20px;
         font-family: MonB;
@@ -37,7 +45,7 @@
       }
     }
     &-item {
-      background: #1f1f1f;
+      // background: #1f1f1f;
       border-radius: 8px !important;
       position: relative;
       .ant-select {
@@ -114,6 +122,80 @@
       }
       input {
         margin-top: 5px;
+      }
+    }
+  }
+}
+
+.lighttheme {
+  .swap {
+    &__price {
+      color: $lighttext;
+      span + span {
+        color: $lighttext;
+      }
+    }
+    &__item {
+      background: #ffffff;
+      border: 1px solid rgba(74, 85, 104, 0.1);
+      box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.05);
+      border-radius: 12px;
+      &-ratio {
+        color: $lighttext;
+      }
+      &-input {
+        p {
+          color: $lighttext;
+        }
+        input {
+          color: $lighttext;
+          &::placeholder {
+            color: $lighttext;
+          }
+        }
+      }
+    }
+    &__percent {
+      &-item {
+        color: $lighttext;
+      }
+    }
+    &__select {
+      font-family: MonB !important;
+      &-option {
+        color: $lighttext !important;
+        background-color: #f1f6fc !important;
+        font-family: MonB !important;
+        &-text-light {
+          color: $lighttext !important;
+          font-size: 16px;
+          font-family: MonB !important;
+          line-height: 20px;
+          height: fit-content;
+          display: block;
+        }
+        &-box-lighttheme {
+          background-color: #f1f6fc !important;
+          color: $lighttext !important;
+          font-family: MonB !important;
+          .swap__select-option-text-light {
+            color: $lighttext !important;
+            font-family: MonB !important;
+            margin-left: 20px;
+          }
+        }
+      }
+      .ant-select-selector {
+        background-color: #f1f6fc !important;
+      }
+      &-item {
+        background: #f1f6fc !important;
+        .ant-select-selector {
+          background-color: #f1f6fc !important;
+        }
+        .ant-select-arrow {
+          background: url(../../assets/img/select-arrow-light.svg) no-repeat;
+        }
       }
     }
   }

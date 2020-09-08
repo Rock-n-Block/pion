@@ -12,7 +12,7 @@
   padding: 0 10px;
   margin: 0 auto;
 }
-body {
+.pion {
   background-color: #040302;
   background-image: url(./assets/img/bg-1.svg), url(./assets/img/bg-2.svg);
   background-repeat: no-repeat;
@@ -21,6 +21,12 @@ body {
   margin: 0;
   padding: 80px 0 40px;
   height: fit-content;
+  &.lighttheme {
+    background-color: #edf2f7;
+    background-image: url(./assets/img/bg-light.svg);
+    background-repeat: no-repeat;
+    background-position: cover;
+  }
 }
 
 .btn {
@@ -34,11 +40,19 @@ body {
   cursor: pointer;
   text-align: center;
   border-radius: 4px;
+  border: none;
+  outline: none;
   &--big {
     padding: 13px 25px;
     width: 100%;
     text-transform: uppercase;
     font-family: MonB;
+  }
+  &:focus {
+    outline: none;
+  }
+  &:hover {
+    background: $orange;
   }
 }
 
@@ -100,4 +114,22 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type='number'] {
   -moz-appearance: textfield;
+}
+.lighttheme {
+  .btn {
+    background: $lighttext;
+  }
+  input {
+    border: none;
+    background: transparent;
+    font-size: 33px;
+    line-height: 40px;
+    color: $lighttext;
+    &:focus {
+      outline: none;
+    }
+    &::placeholder {
+      color: $lighttext;
+    }
+  }
 }

@@ -54,3 +54,27 @@
     }
   }
 }
+.lighttheme {
+  .stake {
+    &__navbar {
+      border: 1px solid rgba(74, 85, 104, 0.25);
+      border-radius: 8px;
+      &-tab {
+        color: $lighttext;
+        opacity: 0.5;
+      }
+    }
+    &__inf {
+      &-item {
+        border: 1px solid rgba(74, 85, 104, 0.25);
+        &-title {
+          color: $lighttext;
+          opacity: 0.5;
+        }
+        &-content {
+          color: $lighttext;
+        }
+      }
+    }
+  }
+}

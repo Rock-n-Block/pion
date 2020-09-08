@@ -1,0 +1,24 @@
+.ant-modal {
+  &-content {
+    background-color: #292929 !important;
+    color: white;
+    img {
+      width: 70px;
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 14px;
+      line-height: 17px;
+    }
+  }
+  &-body {
+    text-align: center;
+    padding: 50px 25px !important;
+  }
+  &-close-x {
+    cursor: pointer;
+    path {
+      fill: white !important;
+    }
+  }
+}

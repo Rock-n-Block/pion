@@ -22,3 +22,15 @@
     }
   }
 }
+.lighttheme {
+  .stats {
+    &__item {
+      background: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 12px;
+      &-head {
+        color: $lighttext;
+      }
+    }
+  }
+}
