@@ -1,18 +1,19 @@
 import Web3 from 'web3';
+import ContractDetails from './contract-details';
 
 
 const IS_PRODUCTION = false;
 
 const WEB3_CONSTANTS = {
-    rinkeby: {
-        WEB3_PROVIDER: 'https://rinkeby.infura.io/v3/e19163752e5143b4ba709e31a1a0decd'
+    ropsten: {
+        WEB3_PROVIDER: 'https://ropsten.infura.io/v3/e65462856a9b46fbbec5d0fde337f2b0'
     }
 };
 
 
 const networks = {
     production: 'mainnet',
-    testnet: 'rinkeby'
+    testnet: 'ropsten'
 };
 
 class MetamaskService {
@@ -63,9 +64,8 @@ class MetamaskService {
                 this.Web3Provider.setProvider(this.providers.infura);
                 reject(errorParams)
             };
-
-            const usedNetworkVersion = IS_PRODUCTION ? 1 : 4;
-            const net = usedNetworkVersion === 1 ? 'mainnet' : 'rinkeby';
+            const usedNetworkVersion = IS_PRODUCTION ? 1 : 3;
+            const net = usedNetworkVersion === 1 ? 'mainnet' : 'ropsten';
             const isValidMetaMaskNetwork = () => {
                 const networkVersion = Number((this.metaMaskWeb3.chainId).slice(-1));
                 if (usedNetworkVersion !== networkVersion) {
@@ -93,6 +93,9 @@ class MetamaskService {
                         }
                     }
                 });
+                this.metaMaskWeb3.on('chainChanged', () => {
+                    window.location.reload();
+                });
 
                 if (!this.metaMaskWeb3.selectedAddress) {
                     this.metaMaskWeb3.enable().catch(() => {
@@ -119,6 +122,86 @@ class MetamaskService {
             }
         })
     }
+
+
+    getContract(abi, address) {
+        return this.Web3Provider.eth.Contract(abi, address);
+    }
+
+
+    encodeFunctionCall(abi, data) {
+        return this.Web3Provider.eth.abi.encodeFunctionCall(abi, data);
+    }
+
+    getMethodInterface(methodName, abi) {
+        return abi.filter((m) => {
+            return m.name === methodName;
+        })[0];
+    }
+
+    createTransaction(method) {
+        const interfaceMethod = this.getMethodInterface(
+            'getDistributionToken',
+            ContractDetails.MESON.ABI,
+        );
+        console.log(interfaceMethod)
+        const trxRequest = ['0x68E0C1dBF926cDa7A65ef2722e046746EB0f816f']
+
+        debugger
+        const activateSignature = this.encodeFunctionCall(
+            interfaceMethod,
+            trxRequest,
+        );
+        console.log(activateSignature)
+    }
+
+
+    sendTransaction(transactionConfig, provider) {
+        if (provider) {
+            this.Web3Provider.eth.setProvider(this.providers[provider]);
+        }
+        return new Promise((resolve, reject) => {
+            this.Web3Provider.eth
+                .sendTransaction(transactionConfig, (err, response) => {
+                    if (!err) {
+                        const trxSubscription = setInterval(() => {
+                            this.Web3Provider.eth.getTransactionReceipt(
+                                response,
+                                (error, transaction) => {
+                                    if (transaction) {
+                                        if (transaction.status) {
+                                            resolve(transaction);
+                                        } else {
+                                            reject(err);
+                                        }
+                                        clearInterval(trxSubscription);
+                                    }
+                                    if (error) {
+                                        clearInterval(trxSubscription);
+                                    }
+                                },
+                            );
+                        }, 1000);
+                    } else {
+                        reject(err);
+                    }
+                })
+                .then(
+                    (result) => {
+                        console.log(result);
+                    },
+                    (err) => {
+                        console.log(err);
+                    },
+                )
+                .finally(() => {
+                    if (provider) {
+                        this.Web3Provider.eth.setProvider(this.providers.infura);
+                    }
+                });
+        });
+    }
+
 }
 
 export default MetamaskService;
