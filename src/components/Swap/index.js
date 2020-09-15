@@ -2,6 +2,9 @@ import React from 'react';
 import classNames from 'classnames';
 import { Select } from 'antd';
 import { useSelector } from 'react-redux';
+import MetamaskService from '../../utils/web3';
+import ContractDetails from '../../utils/web3/contract-details';
+import tokensDecimal from '../../utils/web3/decimals';
 
 import './Swap.scss'
 
@@ -13,12 +16,67 @@ import SwapLightImg from '../../assets/img/swap-light.svg';
 const { Option } = Select;
 
 const Swap = () => {
+    const [metamask, setMetamask] = React.useState(new MetamaskService())
+    const [web3PionContract, setWeb3PionContract] = React.useState(metamask.getContract(
+        ContractDetails.PION.ABI,
+        ContractDetails.PION.ADDRESS
+    ))
+    const [web3UniPairContract, setWeb3UniPairContract] = React.useState(metamask.getContract(
+        ContractDetails.UNI_PAIR.ABI,
+        ContractDetails.UNI_PAIR.ADDRESS
+    ))
+    const [ratio, setRatio] = React.useState(0)
+
+    const [formAmount, setFormAmount] = React.useState('')
+    const [selectBaseValue, setSelectBaseValue] = React.useState('PION')
+    const [selectQuoteValue, setSelectQuoteValue] = React.useState('PRIZE')
+    const [swapMethod, setSwapMethod] = React.useState('buy')
+
     const percentItems = [10, 25, 50, 75, 100]
 
     const [activePercent, setActivePercent] = React.useState(10)
 
 
-    const lightTheme = useSelector(({ theme }) => theme.lightTheme);
+    const { lightTheme, address, errorCode } = useSelector((state) => {
+        return {
+            lightTheme: state.theme.lightTheme,
+            address: state.user.address,
+            errorCode: state.user.errorCode
+        }
+    });
+
+    const onChangeBaseSelect = (token) => {
+        token === 'PION' ? setSwapMethod('buy') : setSwapMethod('sell')
+        setSelectBaseValue(token)
+
+        setSelectQuoteValue((token !== 'PION' ? 'PION' : 'PRIZE'))
+    }
+
+    const onChangeQuoteSelect = (token) => {
+        token !== 'PION' ? setSwapMethod('buy') : setSwapMethod('sell')
+        setSelectQuoteValue(token)
+
+        setSelectBaseValue((token !== 'PION' ? 'PION' : 'PRIZE'))
+    }
+
+    const onSwap = () => {
+        setFormAmount(0)
+        metamask.checkAllowance(address, ContractDetails.PRIZE.ADDRESS, formAmount, web3PionContract)
+            .then(res => {
+                metamask.createTokenTransaction(formAmount, ContractDetails.PRIZE.ADDRESS, address, swapMethod)
+            })
+            .catch(() => {
+            })
+    }
+
+    React.useEffect(() => {
+        web3UniPairContract.methods.getReserves()
+            .call()
+            .then(res => {
+                setRatio(res['_reserve1'] / (res['_reserve0'] * Math.pow(10, tokensDecimal.PION)))
+            })
+            .catch(err => console.log(err))
+    }, [])
 
     return (
         <div className="swap">
@@ -36,10 +94,10 @@ const Swap = () => {
                 <div className="swap__item">
                     <div className="swap__item-input">
                         <p>SWAP</p>
-                        <input type="number" placeholder="0.00" />
+                        <input type="number" placeholder="0.00" value={formAmount} onChange={(e) => setFormAmount(e.target.value)} />
                     </div>
                     <div className="swap__select">
-                        <Select defaultValue="PION" className="swap__select-item" dropdownStyle={lightTheme ? { backgroundColor: '#F1F6FC' } : { backgroundColor: '#1F1F1F' }}>
+                        <Select value={selectBaseValue} className="swap__select-item" onChange={onChangeBaseSelect} dropdownStyle={lightTheme ? { backgroundColor: '#F1F6FC' } : { backgroundColor: '#1F1F1F' }}>
                             <Option value="PION" className={classNames({
                                 'swap__select-option-box': !lightTheme,
                                 'swap__select-option-box-lighttheme': lightTheme
@@ -60,7 +118,7 @@ const Swap = () => {
                             </Option>
                         </Select>
                     </div>
-                    <div className="swap__item-ratio">0 PION = $0 USD</div>
+                    <div className="swap__item-ratio">1 PION = ${ratio} USD</div>
                 </div>
                 {
                     lightTheme ? <img src={SwapLightImg} alt="" className="swap__img" /> : <img src={SwapImg} alt="" className="swap__img" />
@@ -70,10 +128,10 @@ const Swap = () => {
                 <div className="swap__item">
                     <div className="swap__item-input">
                         <p>Receive</p>
-                        <input type="number" placeholder="0.00" />
+                        <input type="number" placeholder="0.00" value={formAmount} onChange={(e) => setFormAmount(e.target.value)} />
                     </div>
                     <div className="swap__select">
-                        <Select defaultValue="PRIZE" className="swap__select-item" dropdownStyle={lightTheme ? { backgroundColor: '#F1F6FC' } : { backgroundColor: '#1F1F1F' }}>
+                        <Select value={selectQuoteValue} onChange={onChangeQuoteSelect} className="swap__select-item" dropdownStyle={lightTheme ? { backgroundColor: '#F1F6FC' } : { backgroundColor: '#1F1F1F' }}>
                             <Option value="PION" className={classNames({
                                 'swap__select-option-box': !lightTheme,
                                 'swap__select-option-box-lighttheme': lightTheme
@@ -96,7 +154,7 @@ const Swap = () => {
                     </div>
                     <div className="swap__item-ratio">1 PION = 1 PRIZE</div>
                 </div>
-                <div className="swap__btn btn btn--big">SWAP</div>
+                <button className="swap__btn btn btn--big" onClick={onSwap} disabled={formAmount == '0' || !formAmount || errorCode}>SWAP</button>
                 <div className="swap__price">
                     <span>Price Block: </span>
                     <span>29410</span>

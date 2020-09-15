@@ -24,7 +24,19 @@ const Stake = () => {
         ContractDetails.MESON.ABI,
         ContractDetails.MESON.ADDRESS
     ))
-    const [walletBalance, setWalletBalance] = React.useState(0)
+    const [web3UniContract, setWeb3UniContract] = React.useState(metamask.getContract(
+        ContractDetails.UNI.ABI,
+        ContractDetails.UNI.ADDRESS
+    ))
+    const [walletPionBalance, setWallePiontBalance] = React.useState(0)
+    const [walletUniBalance, setWalleUniBalance] = React.useState(0)
+    const [amountToWithdraw, setAmountToWithdraw] = React.useState(0)
+    const [rewardsClaimed, setRewardsClaimed] = React.useState(0)
+    const [totalRewards, setTotalRewards] = React.useState(0)
+    const [totalDeposit, setTotalDeposit] = React.useState(0)
+    const [lockedRewards, setLockedRewards] = React.useState(0)
+    const [unlockedRewards, setUnlockedRewards] = React.useState(0)
+    const [totalProgramDuration, setTotalProgramDuration] = React.useState(0)
 
     const infItems = [
         {
@@ -48,16 +60,84 @@ const Stake = () => {
 
     const [activeTab, setActiveTab] = React.useState(0)
 
-    const lightTheme = useSelector(({ theme }) => theme.lightTheme);
+    const { lightTheme, address, errorCode } = useSelector((state) => {
+        return {
+            lightTheme: state.theme.lightTheme,
+            address: state.user.address,
+            errorCode: state.user.errorCode
+        }
+    });
 
-    React.useEffect(() => {
+    const updateData = () => {
 
-        web3PionContract.methods.balanceOf('0x68E0C1dBF926cDa7A65ef2722e046746EB0f816f')
+        web3PionContract.methods.balanceOf(address)
             .call()
             .then(res => {
-                setWalletBalance(res / Math.pow(10, tokensDecimal.PION))
+                setWallePiontBalance(res / Math.pow(10, tokensDecimal.PION))
             })
             .catch(err => console.log(err))
+
+        web3UniContract.methods.balanceOf(address)
+            .call()
+            .then(res => {
+                setWalleUniBalance(res)
+            })
+            .catch(err => console.log(err))
+
+        web3MesonContract.methods.totalStakedFor(address)
+            .call()
+            .then(res => {
+                setAmountToWithdraw(res)
+            })
+            .catch(err => console.log(err))
+
+        web3MesonContract.methods.updateAccounting()
+            .call()
+            .then(res => {
+                setRewardsClaimed(res[5])
+            })
+            .catch(err => console.log(err))
+
+        const totalLockedPromise = web3MesonContract.methods.totalLocked().call()
+        const totalUnlockedPromise = web3MesonContract.methods.totalUnlocked().call()
+
+        Promise.all([totalUnlockedPromise, totalLockedPromise]).then(values => {
+            const total = +values[0] + +values[1]
+            setTotalRewards(total)
+        });
+
+        web3MesonContract.methods.totalStaked()
+            .call()
+            .then(res => {
+                setTotalDeposit(res)
+            })
+            .catch(err => console.log(err))
+
+        web3MesonContract.methods.totalLocked()
+            .call()
+            .then(res => {
+                setLockedRewards(res)
+            })
+            .catch(err => console.log(err))
+
+        web3MesonContract.methods.totalUnlocked()
+            .call()
+            .then(res => {
+                setUnlockedRewards(res)
+            })
+            .catch(err => console.log(err))
+
+        web3MesonContract.methods.updateAccounting()
+            .call()
+            .then(res => {
+                console.log(res)
+                setTotalProgramDuration(res[4] / 86400)
+            })
+            .catch(err => console.log(err))
+    }
+
+    React.useEffect(() => {
+        updateData()
     }, [])
 
     const onDeposit = (amount) => {
@@ -65,6 +145,7 @@ const Stake = () => {
             .call()
             .then(res => {
                 console.log(res)
+                updateData()
             })
             .catch(err => console.log(err))
     }
@@ -100,9 +181,25 @@ const Stake = () => {
                 }
             </div>
             <div className="stake__content">
-                {activeTab === 0 && <Deposit lightTheme={lightTheme} onDeposit={onDeposit} walletBalance={walletBalance} />}
-                {activeTab === 1 && <Withdraw lightTheme={lightTheme} />}
-                {activeTab === 2 && <Stats lightTheme={lightTheme} />}
+                {activeTab === 0 && <Deposit lightTheme={lightTheme} onDeposit={onDeposit} walletBalance={walletPionBalance} errorCode={errorCode} />}
+                {activeTab === 1 &&
+                    <Withdraw
+                        lightTheme={lightTheme}
+                        walletBalance={walletUniBalance}
+                        amountToWithdraw={amountToWithdraw}
+                        rewardsClaimed={rewardsClaimed}
+                        errorCode={errorCode}
+                    />
+                }
+                {activeTab === 2 &&
+                    <Stats lightTheme={lightTheme}
+                        totalRewards={totalRewards}
+                        totalDeposit={totalDeposit}
+                        lockedRewards={lockedRewards}
+                        unlockedRewards={unlockedRewards}
+                        totalProgramDuration={totalProgramDuration}
+                    />
+                }
             </div>
         </div>
     );

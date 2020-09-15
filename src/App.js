@@ -31,7 +31,7 @@ function App() {
         dispatch(userActions.setUserData(err))
         dispatch(modalActions.toggleModal(true))
       })
-    })
+    }, 500)
   })
 
   return (

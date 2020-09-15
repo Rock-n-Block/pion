@@ -1,5 +1,7 @@
 import Web3 from 'web3';
 import ContractDetails from './contract-details';
+import tokensDecimal from './decimals';
+import BigNumber from "bignumber.js"
 
 
 const IS_PRODUCTION = false;
@@ -123,6 +125,115 @@ class MetamaskService {
         })
     }
 
+    checkAllowance = (walletAddress, tokenAddress, amount, contract) => {
+        return new Promise((resolve, reject) => {
+            contract.methods
+                .allowance(walletAddress, tokenAddress)
+                .call()
+                .then(
+                    (result) => {
+                        result = result ? result.toString(10) : result;
+                        result = result === '0' ? null : result;
+                        if (result && new BigNumber(result).minus(amount).isPositive()) {
+                            resolve(true);
+                        } else {
+                            this.approveToken(walletAddress, tokenAddress, walletAddress)
+                            reject(false);
+                        }
+                    },
+                    () => {
+                        reject(false);
+                    }
+                );
+        });
+    }
+
+    getContributeTransaction(amount, tokenAddress, walletAddress, method) {
+
+        const stringAmountValue = new BigNumber(amount)
+            .times(Math.pow(10, tokensDecimal.PION))
+            .toString(10);
+
+        const depositMethod = this.getMethodInterface(
+            method,
+            ContractDetails.PRIZE.ABI
+        );
+
+        const depositSignature = this.encodeFunctionCall(
+            depositMethod,
+            [stringAmountValue]
+        );
+
+        const contributeTransaction = () => {
+            return this.sendTransaction(
+                {
+                    from: walletAddress,
+                    to: tokenAddress,
+                    data: depositSignature,
+                },
+                'metamask'
+            );
+        };
+
+        return {
+            action: contributeTransaction,
+            signature: depositSignature,
+            token: tokenAddress,
+        };
+    }
+
+
+    createTokenTransaction = (amount, tokenAddress, walletAddress, method) => {
+        const contributeData = this.getContributeTransaction(amount, tokenAddress, walletAddress, method);
+        const transaction = {
+            title:
+                'Make the transfer of 10 pion tokens to contract',
+            to: tokenAddress,
+            data: contributeData.signature,
+            action: contributeData.action,
+            ethValue: amount,
+        };
+
+        this.createTransactionObj(transaction, walletAddress)
+    }
+
+    approveToken = (walletAddress, tokenAddress) => {
+        debugger
+        const approveMethod = this.getMethodInterface('approve', ContractDetails.PION.ABI);
+
+        const approveSignature = this.encodeFunctionCall(
+            approveMethod,
+            [
+                tokenAddress,
+                new BigNumber(90071992.5474099)
+                    .times(Math.pow(10, Math.max(tokensDecimal.PION, 7)))
+                    .toString(10),
+            ]
+        );
+
+
+        const approveTransaction = () => {
+            return this.sendTransaction(
+                {
+                    from: walletAddress,
+                    to: '0x4cf99765c90b17D0FEc632c93c8Dc0EF9CA1374D',
+                    data: approveSignature,
+                },
+                'metamask'
+            );
+        };
+
+        const transaction = {
+            title:
+                'Authorise the contract for getting prize tokens',
+            to: '0x4cf99765c90b17D0FEc632c93c8Dc0EF9CA1374D',
+            data: approveSignature,
+            action: approveTransaction,
+        };
+
+        this.createTransactionObj(transaction, walletAddress)
+    }
+
 
     getContract(abi, address) {
         return this.Web3Provider.eth.Contract(abi, address);
@@ -137,6 +248,16 @@ class MetamaskService {
         return abi.filter((m) => {
             return m.name === methodName;
         })[0];
+    }
+
+    createTransactionObj(transaction, walletAddress) {
+        this.prepareTransaction(
+            {
+                type: 'metamask',
+                address: walletAddress,
+            },
+            transaction
+        );
     }
 
     createTransaction(method) {
@@ -156,11 +277,24 @@ class MetamaskService {
     }
 
 
+    prepareTransaction(wallet, transaction) {
+
+        transaction
+            .action(wallet)
+            .then((result) => {
+                console.log((result))
+            })
+            .catch(err => console.log(err))
+    }
+
+
+
     sendTransaction(transactionConfig, provider) {
         if (provider) {
             this.Web3Provider.eth.setProvider(this.providers[provider]);
         }
         return new Promise((resolve, reject) => {
+            debugger
             this.Web3Provider.eth
                 .sendTransaction(transactionConfig, (err, response) => {
                     if (!err) {

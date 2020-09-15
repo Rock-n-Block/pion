@@ -5,8 +5,8 @@ import './Deposit.scss'
 import RewardsImg from '../../assets/img/rewards-img.svg';
 import RewardsImgLight from '../../assets/img/rewards-img-light.svg';
 
-const Deposit = ({ lightTheme, onDeposit, walletBalance }) => {
-    const [amount, setAmount] = React.useState(0.00)
+const Deposit = ({ lightTheme, onDeposit, walletBalance, errorCode }) => {
+    const [amount, setAmount] = React.useState('')
 
     const onBtnClick = () => {
         onDeposit(amount)
@@ -29,7 +29,7 @@ const Deposit = ({ lightTheme, onDeposit, walletBalance }) => {
                     <div className="deposit__rewards-content">0.00 PION/month</div>
                 </div>
             </div>
-            <div className="deposit__btn btn btn--big" onClick={onBtnClick}>Deposit</div>
+            <button className="deposit__btn btn btn--big" onClick={onBtnClick} disabled={!amount || amount == '0' || errorCode}>Deposit</button>
         </div>
     );
 }

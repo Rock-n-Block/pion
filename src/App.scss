@@ -25,7 +25,7 @@
     background-color: #edf2f7;
     background-image: url(./assets/img/bg-light.svg);
     background-repeat: no-repeat;
-    background-position: cover;
+    background-size: cover;
   }
 }
 
@@ -43,7 +43,7 @@
   border: none;
   outline: none;
   &--big {
-    padding: 13px 25px;
+    padding: 15px 25px;
     width: 100%;
     text-transform: uppercase;
     font-family: MonB;
@@ -53,6 +53,10 @@
   }
   &:hover {
     background: $orange;
+  }
+  &:disabled {
+    background: #ffb174;
+    cursor: default;
   }
 }
 
@@ -118,6 +122,9 @@ input[type='number'] {
 .lighttheme {
   .btn {
     background: $lighttext;
+    &:disabled {
+      background: #8799b7;
+    }
   }
   input {
     border: none;
