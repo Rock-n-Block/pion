@@ -125,7 +125,7 @@ class MetamaskService {
         })
     }
 
-    checkAllowance = (walletAddress, tokenAddress, amount, contract) => {
+    checkAllowance = (walletAddress, tokenAddress, amount, contract, swapMethod) => {
         return new Promise((resolve, reject) => {
             contract.methods
                 .allowance(walletAddress, tokenAddress)
@@ -137,7 +137,7 @@ class MetamaskService {
                         if (result && new BigNumber(result).minus(amount).isPositive()) {
                             resolve(true);
                         } else {
-                            this.approveToken(walletAddress, tokenAddress, walletAddress)
+                            this.approveToken(walletAddress, tokenAddress, amount, swapMethod)
                             reject(false);
                         }
                     },
@@ -197,7 +197,7 @@ class MetamaskService {
         this.createTransactionObj(transaction, walletAddress)
     }
 
-    approveToken = (walletAddress, tokenAddress) => {
+    approveToken = (walletAddress, tokenAddress, formAmount, swapMethod) => {
         debugger
         const approveMethod = this.getMethodInterface('approve', ContractDetails.PION.ABI);
 
@@ -216,7 +216,7 @@ class MetamaskService {
             return this.sendTransaction(
                 {
                     from: walletAddress,
-                    to: '0x4cf99765c90b17D0FEc632c93c8Dc0EF9CA1374D',
+                    to: ContractDetails.PION.ADDRESS,
                     data: approveSignature,
                 },
                 'metamask'
@@ -226,9 +226,10 @@ class MetamaskService {
         const transaction = {
             title:
                 'Authorise the contract for getting prize tokens',
-            to: '0x4cf99765c90b17D0FEc632c93c8Dc0EF9CA1374D',
+            to: ContractDetails.PION.ADDRESS,
             data: approveSignature,
             action: approveTransaction,
+            onCoplete: () => this.createTokenTransaction(formAmount, ContractDetails.PRIZE.ADDRESS, walletAddress, swapMethod)
         };
 
         this.createTransactionObj(transaction, walletAddress)
@@ -282,7 +283,9 @@ class MetamaskService {
         transaction
             .action(wallet)
             .then((result) => {
-                console.log((result))
+                if (transaction.onCoplete) {
+                    transaction.onCoplete()
+                }
             })
             .catch(err => console.log(err))
     }

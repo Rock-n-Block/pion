@@ -144,7 +144,6 @@ const Stake = () => {
         web3MesonContract.methods.stake(amount, '0x0000000000000000000000000000000000000000')
             .call()
             .then(res => {
-                console.log(res)
                 updateData()
             })
             .catch(err => console.log(err))

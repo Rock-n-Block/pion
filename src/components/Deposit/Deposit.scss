@@ -62,3 +62,14 @@
     }
   }
 }
+
+@media only screen and (max-width: 991px) {
+  .deposit {
+    &__amount {
+      padding: 13px 15px;
+    }
+    &__rewards {
+      padding: 20px 23px;
+    }
+  }
+}

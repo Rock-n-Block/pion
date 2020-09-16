@@ -59,3 +59,21 @@
     }
   }
 }
+
+@media only screen and (max-width: 991px) {
+  .header {
+    .row {
+      width: 100vw;
+      padding: 0 10px;
+      margin: 0;
+    }
+    &__logo {
+      height: 23px;
+    }
+    &__metamask {
+      span {
+        max-width: 80px;
+      }
+    }
+  }
+}

@@ -200,3 +200,54 @@
     }
   }
 }
+
+@media only screen and (max-width: 991px) {
+  .swap {
+    &__percent {
+      display: grid;
+      grid-template-columns: 3fr 4fr 4fr 4fr 3fr;
+      &-item {
+        padding: 10px 0px;
+        text-align: center;
+        &:first-child {
+          text-align: left;
+        }
+        &:last-child {
+          text-align: right;
+        }
+      }
+    }
+    &__select {
+      &-option {
+        img {
+          width: 32px;
+        }
+      }
+    }
+    &__item {
+      padding: 13px 10px 13px 15px;
+      align-items: center;
+      &-input {
+        width: calc(100% - 120px);
+        input {
+          width: 100%;
+          margin-top: 0;
+        }
+      }
+      .ant-select-selector {
+        width: 120px !important;
+        height: 50px !important;
+        padding: 9px 10px !important;
+      }
+      .ant-select-arrow {
+        width: 8px;
+        height: 6px;
+        right: 6px !important;
+        background-size: 100% !important;
+        span {
+          display: none !important;
+        }
+      }
+    }
+  }
+}

@@ -130,6 +130,7 @@ input[type='number'] {
     border: none;
     background: transparent;
     font-size: 33px;
+    width: 100%;
     line-height: 40px;
     color: $lighttext;
     &:focus {
@@ -137,6 +138,17 @@ input[type='number'] {
     }
     &::placeholder {
       color: $lighttext;
+    }
+  }
+}
+@media only screen and (max-width: 991px) {
+  .pion {
+    &__content {
+      padding: 0 10px;
+      margin: 0;
+    }
+    &.lighttheme {
+      background-image: unset;
     }
   }
 }

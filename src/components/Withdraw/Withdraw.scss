@@ -9,3 +9,17 @@
     }
   }
 }
+
+@media only screen and (max-width: 991px) {
+  .withdraw {
+    &__rewards {
+      padding-right: 10px;
+      & + & {
+        margin-left: 10px;
+      }
+      &-content {
+        font-size: 13px;
+      }
+    }
+  }
+}

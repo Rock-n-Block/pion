@@ -60,10 +60,11 @@ const Swap = () => {
     }
 
     const onSwap = () => {
-        setFormAmount(0)
-        metamask.checkAllowance(address, ContractDetails.PRIZE.ADDRESS, formAmount, web3PionContract)
+        metamask.checkAllowance(address, ContractDetails.PRIZE.ADDRESS, formAmount, web3PionContract, swapMethod)
             .then(res => {
+                console.log(res)
                 metamask.createTokenTransaction(formAmount, ContractDetails.PRIZE.ADDRESS, address, swapMethod)
+                setFormAmount(0)
             })
             .catch(() => {
             })
