@@ -12,6 +12,7 @@ import PionImg from '../../assets/img/tokens/pion.svg';
 import PrizeImg from '../../assets/img/tokens/prize.svg';
 import SwapImg from '../../assets/img/swap.svg';
 import SwapLightImg from '../../assets/img/swap-light.svg';
+import Spiner from '../../assets/img/oval.svg';
 
 const { Option } = Select;
 
@@ -31,6 +32,9 @@ const Swap = () => {
     const [selectBaseValue, setSelectBaseValue] = React.useState('PION')
     const [selectQuoteValue, setSelectQuoteValue] = React.useState('PRIZE')
     const [swapMethod, setSwapMethod] = React.useState('buy')
+
+    const [isApproved, setIsApproved] = React.useState(true)
+    const [isApproving, setIsApproving] = React.useState(false)
 
     const percentItems = [10, 25, 50, 75, 100]
 
@@ -60,24 +64,46 @@ const Swap = () => {
     }
 
     const onSwap = () => {
-        metamask.checkAllowance(address, ContractDetails.PRIZE.ADDRESS, formAmount, web3PionContract, swapMethod)
+        metamask.checkAllowance(address, ContractDetails.PRIZE.ADDRESS, formAmount, web3PionContract)
             .then(res => {
-                console.log(res)
                 metamask.createTokenTransaction(formAmount, ContractDetails.PRIZE.ADDRESS, address, swapMethod)
                 setFormAmount(0)
             })
             .catch(() => {
+                setIsApproving(true)
+                metamask.approveToken(address, ContractDetails.PRIZE.ADDRESS, (result) => {
+                    setIsApproving(false)
+                    setIsApproved(result)
+                })
             })
     }
 
+    const onApprove = () => {
+        setIsApproving(true)
+        metamask.approveToken(address, ContractDetails.PRIZE.ADDRESS, (result) => {
+            setIsApproving(false)
+            setIsApproved(result)
+        })
+    }
+
     React.useEffect(() => {
+        if (address) {
+            metamask.checkAllowance(address, ContractDetails.PRIZE.ADDRESS, 0, web3PionContract)
+                .then(res => {
+                    setIsApproved(res)
+                })
+                .catch(() => {
+                    setIsApproved(false)
+                })
+        }
+
         web3UniPairContract.methods.getReserves()
             .call()
             .then(res => {
                 setRatio(res['_reserve1'] / (res['_reserve0'] * Math.pow(10, tokensDecimal.PION)))
             })
             .catch(err => console.log(err))
-    }, [])
+    }, [address])
 
     return (
         <div className="swap">
@@ -155,7 +181,11 @@ const Swap = () => {
                     </div>
                     <div className="swap__item-ratio">1 PION = 1 PRIZE</div>
                 </div>
-                <button className="swap__btn btn btn--big" onClick={onSwap} disabled={formAmount == '0' || !formAmount || errorCode}>SWAP</button>
+                {isApproved ? <button className="swap__btn btn btn--big" onClick={onSwap} disabled={formAmount == '0' || !formAmount || errorCode}>SWAP</button> :
+                    <button className="swap__btn btn btn--big" onClick={onApprove} disabled={isApproving}>
+                        {isApproving && <img src={Spiner} alt="" />}
+                        <span>{isApproving ? 'Waiting' : 'Approve'}</span>
+                    </button>}
                 <div className="swap__price">
                     <span>Price Block: </span>
                     <span>29410</span>

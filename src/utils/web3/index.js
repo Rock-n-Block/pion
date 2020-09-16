@@ -125,7 +125,7 @@ class MetamaskService {
         })
     }
 
-    checkAllowance = (walletAddress, tokenAddress, amount, contract, swapMethod) => {
+    checkAllowance = (walletAddress, tokenAddress, amount, contract) => {
         return new Promise((resolve, reject) => {
             contract.methods
                 .allowance(walletAddress, tokenAddress)
@@ -137,7 +137,6 @@ class MetamaskService {
                         if (result && new BigNumber(result).minus(amount).isPositive()) {
                             resolve(true);
                         } else {
-                            this.approveToken(walletAddress, tokenAddress, amount, swapMethod)
                             reject(false);
                         }
                     },
@@ -197,7 +196,7 @@ class MetamaskService {
         this.createTransactionObj(transaction, walletAddress)
     }
 
-    approveToken = (walletAddress, tokenAddress, formAmount, swapMethod) => {
+    approveToken = (walletAddress, tokenAddress, callback) => {
         debugger
         const approveMethod = this.getMethodInterface('approve', ContractDetails.PION.ABI);
 
@@ -229,7 +228,7 @@ class MetamaskService {
             to: ContractDetails.PION.ADDRESS,
             data: approveSignature,
             action: approveTransaction,
-            onCoplete: () => this.createTokenTransaction(formAmount, ContractDetails.PRIZE.ADDRESS, walletAddress, swapMethod)
+            onCoplete: callback
         };
 
         this.createTransactionObj(transaction, walletAddress)
@@ -284,10 +283,14 @@ class MetamaskService {
             .action(wallet)
             .then((result) => {
                 if (transaction.onCoplete) {
-                    transaction.onCoplete()
+                    transaction.onCoplete(true)
                 }
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                if (transaction.onCoplete) {
+                    transaction.onCoplete(false)
+                }
+            })
     }
 
 
