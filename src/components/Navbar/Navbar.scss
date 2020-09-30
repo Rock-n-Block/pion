@@ -3,7 +3,8 @@
   background: #292929;
   margin-bottom: 30px;
   width: 100%;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   &__item {
     font-size: 16px;
     line-height: 20px;
@@ -12,7 +13,6 @@
     color: #fff;
     opacity: 0.5;
     padding: 16px 10px;
-    width: 50%;
     text-align: center;
     position: relative;
     cursor: pointer;

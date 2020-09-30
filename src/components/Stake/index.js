@@ -137,14 +137,18 @@ const Stake = () => {
     }
 
     React.useEffect(() => {
-        updateData()
+        if (!errorCode) {
+            updateData()
+        }
     }, [])
 
     const onDeposit = (amount) => {
         web3MesonContract.methods.stake(amount, '0x0000000000000000000000000000000000000000')
             .call()
             .then(res => {
-                updateData()
+                if (!errorCode) {
+                    updateData()
+                }
             })
             .catch(err => console.log(err))
     }

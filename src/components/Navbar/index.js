@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import './Navbar.scss'
 
 const Navbar = ({ onSelect, activeTab }) => {
-    const tabs = ['SWAP', 'Stake']
+    const tabs = ['SWAP', 'Stake', 'History']
 
     return (
         <div className="navbar">

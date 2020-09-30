@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import classNames from 'classnames';
 
-import { Header, Navbar, Swap, Stake, Modal } from './components';
+import { Header, Navbar, Swap, Stake, Modal, History } from './components';
 import MetamaskService from './utils/web3';
 import { userActions, modalActions } from './redux/actions';
 
@@ -46,6 +46,9 @@ function App() {
         }
         {
           activeTab === 1 && <Stake />
+        }
+        {
+          activeTab === 2 && <History />
         }
       </div>
       <Modal />
