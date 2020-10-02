@@ -155,7 +155,7 @@ const Stake = () => {
 
     return (
         <div className="stake">
-            <div className="stake__inf">
+            {/* <div className="stake__inf">
                 {
                     infItems.map((item, index) => {
                         return (
@@ -173,7 +173,7 @@ const Stake = () => {
                         )
                     })
                 }
-            </div>
+            </div> */}
             <div className="stake__navbar">
                 {
                     tabs.map((tab, index) => <div key={index} onClick={() => { setActiveTab(index) }} className={classNames('stake__navbar-tab nav-item', {

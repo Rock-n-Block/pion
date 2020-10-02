@@ -26,6 +26,10 @@ const Swap = () => {
         ContractDetails.UNI_PAIR.ABI,
         ContractDetails.UNI_PAIR.ADDRESS
     ))
+    const [web3PrizeContract, setWeb3PrizeContract] = React.useState(metamask.getContract(
+        ContractDetails.PRIZE.ABI,
+        ContractDetails.PRIZE.ADDRESS
+    ))
     const [ratio, setRatio] = React.useState(0)
 
     const [formAmount, setFormAmount] = React.useState('')
@@ -38,7 +42,7 @@ const Swap = () => {
 
     const percentItems = [10, 25, 50, 75, 100]
 
-    const [activePercent, setActivePercent] = React.useState(10)
+    const [activePercent, setActivePercent] = React.useState(0)
 
 
     const { lightTheme, address, errorCode } = useSelector((state) => {
@@ -49,11 +53,42 @@ const Swap = () => {
         }
     });
 
+    const getBalance = (contract) => {
+        return new Promise((resolve, reject) => {
+            contract.methods.balanceOf(address)
+                .call()
+                .then(res => {
+                    resolve(res / Math.pow(10, tokensDecimal.PION))
+                })
+                .catch(err => reject(err))
+        })
+    }
+
+    const handleChangePercent = (percent, activeToken) => {
+        const contract = (activeToken || selectBaseValue) === 'PION' ? web3PionContract : web3PrizeContract
+        setActivePercent(percent)
+        getBalance(contract).then((balance) => {
+            setFormAmount(balance * percent / 100)
+        })
+    }
+
+    const handleMoveTokens = () => {
+        const baseToken = selectBaseValue
+        const quoteToken = selectQuoteValue
+
+        setSelectQuoteValue(baseToken)
+        setSelectBaseValue(quoteToken)
+
+        handleChangePercent(activePercent, quoteToken)
+    }
+
     const onChangeBaseSelect = (token) => {
         token === 'PION' ? setSwapMethod('buy') : setSwapMethod('sell')
         setSelectBaseValue(token)
 
         setSelectQuoteValue((token !== 'PION' ? 'PION' : 'PRIZE'))
+
+        handleChangePercent(activePercent, token)
     }
 
     const onChangeQuoteSelect = (token) => {
@@ -61,6 +96,7 @@ const Swap = () => {
         setSelectQuoteValue(token)
 
         setSelectBaseValue((token !== 'PION' ? 'PION' : 'PRIZE'))
+        handleChangePercent(activePercent, (token !== 'PION' ? 'PION' : 'PRIZE'))
     }
 
     const onSwap = () => {
@@ -112,7 +148,7 @@ const Swap = () => {
                     percentItems.map((item, index) => {
                         return <div key={index} className={classNames('swap__percent-item nav-item', {
                             'active': activePercent === item
-                        })} onClick={() => { setActivePercent(item) }}>{item}%</div>
+                        })} onClick={() => { handleChangePercent(item) }}>{item}%</div>
                     })
                 }
             </div>
@@ -121,7 +157,10 @@ const Swap = () => {
                 <div className="swap__item">
                     <div className="swap__item-input">
                         <p>SWAP</p>
-                        <input type="number" placeholder="0.00" value={formAmount} onChange={(e) => setFormAmount(e.target.value)} />
+                        <input type="number" placeholder="0.00" value={formAmount} onChange={(e) => {
+                            setFormAmount(e.target.value)
+                            setActivePercent(0)
+                        }} />
                     </div>
                     <div className="swap__select">
                         <Select value={selectBaseValue} className="swap__select-item" onChange={onChangeBaseSelect} dropdownStyle={lightTheme ? { backgroundColor: '#F1F6FC' } : { backgroundColor: '#1F1F1F' }}>
@@ -148,14 +187,17 @@ const Swap = () => {
                     <div className="swap__item-ratio">1 PION = ${ratio} USD</div>
                 </div>
                 {
-                    lightTheme ? <img src={SwapLightImg} alt="" className="swap__img" /> : <img src={SwapImg} alt="" className="swap__img" />
+                    lightTheme ? <img src={SwapLightImg} alt="" className="swap__img" onClick={handleMoveTokens} /> : <img src={SwapImg} alt="" className="swap__img" onClick={handleMoveTokens} />
                 }
 
 
                 <div className="swap__item">
                     <div className="swap__item-input">
                         <p>Receive</p>
-                        <input type="number" placeholder="0.00" value={formAmount} onChange={(e) => setFormAmount(e.target.value)} />
+                        <input type="number" placeholder="0.00" value={formAmount} onChange={(e) => {
+                            setFormAmount(e.target.value)
+                            setActivePercent(0)
+                        }} />
                     </div>
                     <div className="swap__select">
                         <Select value={selectQuoteValue} onChange={onChangeQuoteSelect} className="swap__select-item" dropdownStyle={lightTheme ? { backgroundColor: '#F1F6FC' } : { backgroundColor: '#1F1F1F' }}>
