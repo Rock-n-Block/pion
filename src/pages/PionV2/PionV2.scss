@@ -1,0 +1,60 @@
+@import '../../styles/var.scss';
+.v2 {
+  max-width: 860px;
+  margin: 0 auto;
+  &__title {
+    color: $orange;
+    font-size: 24px;
+    line-height: 29px;
+    font-family: MonM;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+      margin: 0 20px;
+    }
+  }
+  &__box {
+    max-width: 600px;
+    margin: 35px auto 40px;
+  }
+  &__input {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    input {
+      width: 85%;
+    }
+  }
+  &__max {
+    font-family: MonM;
+    font-size: 10px;
+    line-height: 12px;
+    padding: 7px 8px;
+    color: $text;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 7px;
+    min-width: 66px;
+  }
+  &__text {
+    color: $text;
+    font-size: 12px;
+    line-height: 15px;
+    font-family: MonM;
+    margin: 25px 0;
+  }
+}
+.lighttheme {
+  .v2 {
+    &__title {
+      color: $lighttext;
+    }
+    &__text {
+      color: $lighttext;
+      opacity: 0.5;
+    }
+  }
+}

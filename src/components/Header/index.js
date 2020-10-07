@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Link, useHistory } from 'react-router-dom';
 import { Switch } from 'antd';
 
 import { themeActions, userActions, modalActions } from '../../redux/actions';
@@ -13,7 +14,8 @@ import MoonImg from '../../assets/img/sun.svg';
 
 import './Header.scss'
 
-const Header = () => {
+const Header = (props) => {
+    const history = useHistory()
     const dispatch = useDispatch()
     const { address, errorCode, lightTheme } = useSelector((state) => {
         return {
@@ -41,11 +43,21 @@ const Header = () => {
         })
     }
 
+    const handleLogoClick = () => {
+        if (history.location.pathname === '/') {
+            history.go()
+        } else {
+            history.push('/')
+        }
+    }
+
 
     return (
         <header className="header">
             <div className="header__row row">
-                <img src={Logo} alt="" className="header__logo" />
+                <div onClick={handleLogoClick}>
+                    <img src={Logo} alt="" className="header__logo" />
+                </div>
                 <div className="header__wrapper">
                     {lightTheme ? <img src={MoonImg} alt="" /> : <img src={SunImg} alt="" />}
                     <Switch size="small" defaultChecked onChange={onChange} />

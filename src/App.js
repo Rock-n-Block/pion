@@ -1,8 +1,10 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import classNames from 'classnames';
+import { Route, Link } from 'react-router-dom';
 
-import { Header, Navbar, Swap, Stake, Modal, History } from './components';
+import { Header, Modal } from './components';
+import { HomePage, PionV2Page } from './pages';
 import MetamaskService from './utils/web3';
 import { userActions, modalActions } from './redux/actions';
 
@@ -10,12 +12,6 @@ import './App.scss'
 
 function App() {
   const dispatch = useDispatch();
-  const [activeTab, setActiveTab] = React.useState(0)
-
-  const onSelect = (tabIndex) => {
-    setActiveTab(tabIndex)
-  }
-
   const lightTheme = useSelector(({ theme }) => theme.lightTheme);
 
   React.useEffect(() => {
@@ -39,18 +35,13 @@ function App() {
       'lighttheme': lightTheme
     })}>
       <Header />
-      <div className="pion__content">
-        <Navbar activeTab={activeTab} onSelect={onSelect} />
-        {
-          activeTab === 0 && <Swap />
-        }
-        {
-          activeTab === 1 && <Stake />
-        }
-        {
-          activeTab === 2 && <History />
-        }
-      </div>
+      <Route exact path="/" component={HomePage} />
+      <Route exact path="/v2" component={PionV2Page} />
+      <Route exact path="/">
+        <Link to="/v2" className="pion__link">Swap Pion v1 to Pion v2 tokens</Link>
+      </Route>
+
+
       <Modal />
     </div>
   );

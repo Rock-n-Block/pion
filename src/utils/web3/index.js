@@ -35,20 +35,6 @@ class MetamaskService {
         this.Web3Provider = new Web3(this.providers.infura);
     }
 
-
-    getContract = (abi, address) => {
-        return new this.Web3Provider.eth.Contract(abi, address);
-    }
-
-    getBalance = (address) => {
-        return this.Web3Provider.eth.getBalance(address);
-    }
-
-    getBlock = () => {
-        return this.Web3Provider.eth.getBlock('latest');
-    }
-
-
     getAccounts = () => {
         return new Promise((resolve, reject) => {
             const onAuth = (address) => {
@@ -197,7 +183,6 @@ class MetamaskService {
     }
 
     approveToken = (walletAddress, tokenAddress, callback) => {
-        debugger
         const approveMethod = this.getMethodInterface('approve', ContractDetails.PION.ABI);
 
         const approveSignature = this.encodeFunctionCall(
@@ -236,7 +221,7 @@ class MetamaskService {
 
 
     getContract(abi, address) {
-        return this.Web3Provider.eth.Contract(abi, address);
+        return new this.Web3Provider.eth.Contract(abi, address);
     }
 
 
@@ -268,7 +253,6 @@ class MetamaskService {
         console.log(interfaceMethod)
         const trxRequest = ['0x68E0C1dBF926cDa7A65ef2722e046746EB0f816f']
 
-        debugger
         const activateSignature = this.encodeFunctionCall(
             interfaceMethod,
             trxRequest,
@@ -300,7 +284,7 @@ class MetamaskService {
             this.Web3Provider.eth.setProvider(this.providers[provider]);
         }
         return new Promise((resolve, reject) => {
-            debugger
+
             this.Web3Provider.eth
                 .sendTransaction(transactionConfig, (err, response) => {
                     if (!err) {

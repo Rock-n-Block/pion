@@ -21,14 +21,6 @@ const Stats = ({ totalRewards, totalDeposit, lockedRewards, unlockedRewards, tot
                 <div className="stats__item-head">Unlocked Rewards</div>
                 <div className="stats__item-content">{unlockedRewards} PION</div>
             </div>
-            <div className="stats__item">
-                <div className="stats__item-head">Total Program duration</div>
-                <div className="stats__item-content">{totalProgramDuration} days left</div>
-            </div>
-            <div className="stats__item">
-                <div className="stats__item-head">Total Reward unlock rate</div>
-                <div className="stats__item-content">1,670,795.25 PION / month</div>
-            </div>
         </div>
     );
 }

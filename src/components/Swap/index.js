@@ -2,9 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { Select } from 'antd';
 import { useSelector } from 'react-redux';
-import MetamaskService from '../../utils/web3';
-import ContractDetails from '../../utils/web3/contract-details';
-import tokensDecimal from '../../utils/web3/decimals';
+import ContractService from '../../utils/contractService';
 
 import './Swap.scss'
 
@@ -17,19 +15,8 @@ import Spiner from '../../assets/img/oval.svg';
 const { Option } = Select;
 
 const Swap = () => {
-    const [metamask, setMetamask] = React.useState(new MetamaskService())
-    const [web3PionContract, setWeb3PionContract] = React.useState(metamask.getContract(
-        ContractDetails.PION.ABI,
-        ContractDetails.PION.ADDRESS
-    ))
-    const [web3UniPairContract, setWeb3UniPairContract] = React.useState(metamask.getContract(
-        ContractDetails.UNI_PAIR.ABI,
-        ContractDetails.UNI_PAIR.ADDRESS
-    ))
-    const [web3PrizeContract, setWeb3PrizeContract] = React.useState(metamask.getContract(
-        ContractDetails.PRIZE.ABI,
-        ContractDetails.PRIZE.ADDRESS
-    ))
+    const [contractService] = React.useState(new ContractService())
+
     const [ratio, setRatio] = React.useState(0)
 
     const [formAmount, setFormAmount] = React.useState('')
@@ -53,22 +40,12 @@ const Swap = () => {
         }
     });
 
-    const getBalance = (contract) => {
-        return new Promise((resolve, reject) => {
-            contract.methods.balanceOf(address)
-                .call()
-                .then(res => {
-                    resolve(res / Math.pow(10, tokensDecimal.PION))
-                })
-                .catch(err => reject(err))
-        })
-    }
-
     const handleChangePercent = (percent, activeToken) => {
-        const contract = (activeToken || selectBaseValue) === 'PION' ? web3PionContract : web3PrizeContract
+        const method = (activeToken || selectBaseValue) === 'PION' ? contractService.getPionBalance : contractService.getPrizeBalance
         setActivePercent(percent)
-        getBalance(contract).then((balance) => {
-            setFormAmount(balance * percent / 100)
+        method(address).then((balance) => {
+            const newAmount = percent ? (balance * percent / 100).toFixed(9) : ''
+            setFormAmount(newAmount)
         })
     }
 
@@ -100,14 +77,13 @@ const Swap = () => {
     }
 
     const onSwap = () => {
-        metamask.checkAllowance(address, ContractDetails.PRIZE.ADDRESS, formAmount, web3PionContract)
-            .then(res => {
-                metamask.createTokenTransaction(formAmount, ContractDetails.PRIZE.ADDRESS, address, swapMethod)
+        contractService.checkAllowance(address, formAmount)
+            .then(() => {
+                contractService.createTokenTransaction(formAmount, address, swapMethod)
                 setFormAmount(0)
             })
             .catch(() => {
-                setIsApproving(true)
-                metamask.approveToken(address, ContractDetails.PRIZE.ADDRESS, (result) => {
+                contractService.approveToken(address, (result) => {
                     setIsApproving(false)
                     setIsApproved(result)
                 })
@@ -116,7 +92,8 @@ const Swap = () => {
 
     const onApprove = () => {
         setIsApproving(true)
-        metamask.approveToken(address, ContractDetails.PRIZE.ADDRESS, (result) => {
+
+        contractService.approveToken(address, (result) => {
             setIsApproving(false)
             setIsApproved(result)
         })
@@ -124,7 +101,7 @@ const Swap = () => {
 
     React.useEffect(() => {
         if (address) {
-            metamask.checkAllowance(address, ContractDetails.PRIZE.ADDRESS, 0, web3PionContract)
+            contractService.checkAllowance(address, 0)
                 .then(res => {
                     setIsApproved(res)
                 })
@@ -133,10 +110,9 @@ const Swap = () => {
                 })
         }
 
-        web3UniPairContract.methods.getReserves()
-            .call()
+        contractService.getReservesUniPair()
             .then(res => {
-                setRatio(res['_reserve1'] / (res['_reserve0'] * Math.pow(10, tokensDecimal.PION)))
+                setRatio(res)
             })
             .catch(err => console.log(err))
     }, [address])
@@ -221,17 +197,17 @@ const Swap = () => {
                             </Option>
                         </Select>
                     </div>
-                    <div className="swap__item-ratio">1 PION = 1 PRIZE</div>
+                    <div className="swap__item-ratio">1 PION = 1 PRIZE (fee 2%)</div>
                 </div>
                 {isApproved ? <button className="swap__btn btn btn--big" onClick={onSwap} disabled={formAmount == '0' || !formAmount || errorCode}>SWAP</button> :
                     <button className="swap__btn btn btn--big" onClick={onApprove} disabled={isApproving}>
                         {isApproving && <img src={Spiner} alt="" />}
                         <span>{isApproving ? 'Waiting' : 'Approve'}</span>
                     </button>}
-                <div className="swap__price">
+                {/* <div className="swap__price">
                     <span>Price Block: </span>
                     <span>29410</span>
-                </div>
+                </div> */}
             </div>
         </div>
     );

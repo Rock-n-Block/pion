@@ -70,7 +70,7 @@ const History = () => {
                             <div className="history__item-date">{dateFormat(item.date)}</div>
                             <div className="history__item-supply">
                                 {
-                                    item.raised ? <img src={supplyUpImg} alt="" /> : item.raised === null ? '' : <img src={supplyDownImg} alt="" />
+                                    item.raised ? <img src={supplyUpImg} alt="" /> : item.raised === null ? <div className="history__empty"></div> : <img src={supplyDownImg} alt="" />
                                 }
                                 {(item.total_supply / Math.pow(10, 9)).toFixed(2)}
                             </div>

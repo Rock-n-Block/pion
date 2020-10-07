@@ -4,6 +4,9 @@
   width: 100%;
   left: 0;
   padding: 20px 0;
+  &__logo {
+    cursor: pointer;
+  }
   &__row {
     display: flex;
     justify-content: space-between;

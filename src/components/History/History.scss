@@ -2,6 +2,9 @@
 
 .history {
   padding-top: 10px;
+  &__empty {
+    width: 21px;
+  }
   &__box {
     padding: 0 24px;
     display: grid;
@@ -84,6 +87,25 @@
 }
 .lighttheme {
   .history {
+    &__pages {
+      .ant-pagination-item-link {
+        background: white !important;
+        svg {
+          fill: $lighttext !important;
+        }
+      }
+      .ant-pagination-item {
+        background: white !important;
+        a {
+          color: $lighttext !important;
+        }
+        &-active {
+          a {
+            color: $orange !important;
+          }
+        }
+      }
+    }
     &__head {
       &-item {
         color: $lighttext;

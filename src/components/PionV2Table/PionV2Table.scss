@@ -1,0 +1,155 @@
+@import '../../styles/var.scss';
+.v2-table {
+  &__box {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    padding: 10px 10px 12px;
+    & + & {
+      margin-left: 10px;
+    }
+    .v2-table__item-elem + .v2-table__item-elem {
+      margin-left: 10px;
+      padding-left: 10px;
+      position: relative;
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        height: 22px;
+        width: 1px;
+        background: rgba(255, 255, 255, 0.25);
+        display: block;
+        bottom: -1px;
+      }
+    }
+  }
+  &__item {
+    padding: 10px 20px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    & + & {
+      margin-top: 10px;
+    }
+    &-btn {
+      font-family: MonM;
+      font-size: 12px;
+      line-height: 15px;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 4px;
+      border: 1px solid $orange;
+      margin-left: auto;
+      cursor: pointer;
+      background: transparent;
+      outline: none !important;
+      display: flex;
+      align-items: center;
+      &:disabled {
+        background: rgba(255, 255, 255, 0.25);
+        color: rgba(255, 255, 255, 0.25);
+        border: none;
+        cursor: default;
+      }
+      &.active {
+        border: none;
+        cursor: default;
+        span {
+          margin-left: 4px;
+          color: $orange;
+        }
+      }
+    }
+    &-content {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+    &-head {
+      display: flex;
+      align-items: center;
+      .v2-table__item-elem + .v2-table__item-elem {
+        margin-left: 29px;
+      }
+    }
+    &-elem {
+      p {
+        font-size: 12px;
+        line-height: 15px;
+        font-family: MonM;
+        color: $text;
+      }
+      span {
+        font-size: 14px;
+        line-height: 17px;
+        font-family: MonM;
+        color: white;
+        &.bold {
+          font-family: MonB;
+          color: $orange;
+        }
+      }
+    }
+  }
+}
+
+.ant-tooltip {
+  &-inner {
+    width: fit-content !important;
+    background-color: $orange !important;
+    color: white !important;
+    font-size: 16px;
+    line-height: 20px;
+    font-family: MonS !important;
+  }
+  &-arrow-content {
+    background-color: $orange !important;
+  }
+}
+.lighttheme {
+  .v2-table {
+    &__box {
+      border: 1px solid rgba(74, 85, 104, 0.25);
+      .v2-table__item-elem + .v2-table__item-elem {
+        &::before {
+          background: rgba(74, 85, 104, 0.25);
+        }
+      }
+    }
+    &__item {
+      background: white;
+      &-btn {
+        background: $lighttext;
+        border: none;
+        &.active {
+          background: white;
+          span {
+            color: $lighttext;
+          }
+        }
+      }
+      &-elem {
+        p {
+          color: $lighttext;
+          opacity: 0.5;
+        }
+        span {
+          color: $lighttext;
+          &.bold {
+            color: $lighttext;
+          }
+        }
+      }
+    }
+  }
+  .ant-tooltip {
+    &-inner {
+      background-color: #f1f6fc !important;
+      color: $lighttext !important;
+    }
+    &-arrow-content {
+      background-color: #f1f6fc !important;
+    }
+  }
+}

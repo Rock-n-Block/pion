@@ -5,7 +5,7 @@ import './Deposit.scss'
 import RewardsImg from '../../assets/img/rewards-img.svg';
 import RewardsImgLight from '../../assets/img/rewards-img-light.svg';
 
-const Deposit = ({ lightTheme, onDeposit, walletBalance, errorCode }) => {
+const Deposit = ({ lightTheme, onDeposit, walletBalance, errorCode, reward }) => {
     const [amount, setAmount] = React.useState('')
 
     const onBtnClick = () => {
@@ -25,8 +25,8 @@ const Deposit = ({ lightTheme, onDeposit, walletBalance, errorCode }) => {
             <div className="deposit__rewards">
                 {lightTheme ? <img src={RewardsImgLight} alt="" /> : <img src={RewardsImg} alt="" />}
                 <div className="deposit__rewards-wrapper">
-                    <div className="deposit__rewards-title">Your Estimated Rewards</div>
-                    <div className="deposit__rewards-content">0.00 PION/month</div>
+                    <div className="deposit__rewards-title">Accrued Reward</div>
+                    <div className="deposit__rewards-content">{reward} PION</div>
                 </div>
             </div>
             <button className="deposit__btn btn btn--big" onClick={onBtnClick} disabled={!amount || amount == '0' || errorCode}>Deposit</button>
