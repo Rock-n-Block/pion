@@ -18,6 +18,8 @@ const PionV2 = () => {
     const [isApproved, setIsApproved] = React.useState(true)
     const [isApproving, setIsApproving] = React.useState(false)
 
+    const [swapsId, setSwapsId] = React.useState([])
+
 
     const { lightTheme, address, errorCode } = useSelector((state) => {
         return {
@@ -29,9 +31,13 @@ const PionV2 = () => {
 
     const updateData = () => {
         if (address) {
-            contractService.getPionBalance(address).then(balance => {
+            contractService.getPionV1Balance(address).then(balance => {
                 setWalletBalance(balance)
             })
+
+            contractService.getUserSwaps(address)
+                .then(res => setSwapsId(res))
+                .catch(err => console.log(err))
         }
     }
 
@@ -41,22 +47,19 @@ const PionV2 = () => {
 
     const onSwap = () => {
         console.log(amount)
-        // contractService.checkAllowance(address, formAmount)
-        //     .then(() => {
-        //         contractService.createTokenTransaction(formAmount, address, swapMethod)
-        //         setFormAmount(0)
-        //     })
-        //     .catch(() => {
-        //         contractService.approveToken(address, (result) => {
-        //             setIsApproving(false)
-        //             setIsApproved(result)
-        //         })
-        //     })
+        contractService.createTokenTransaction(amount, address, 'swapTokens', 'PION_SWAP', () => {
+            debugger
+            updateData()
+        })
+
+        // contractService.swapV1ToV2(amount)
+        //     .then(res => console.log(res, 'res'))
+        //     .catch(err => console.log(err))
     }
     const onApprove = () => {
         setIsApproving(true)
 
-        contractService.approveToken(address, (result) => {
+        contractService.approveSwapV1ToV2(address, (result) => {
             setIsApproving(false)
             setIsApproved(result)
         })
@@ -64,7 +67,7 @@ const PionV2 = () => {
 
     React.useEffect(() => {
         if (address) {
-            contractService.checkAllowance(address, 0)
+            contractService.checkSwapAllowance(address, 0)
                 .then(res => {
                     setIsApproved(res)
                 })

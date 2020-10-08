@@ -45,7 +45,7 @@ const Swap = () => {
         setActivePercent(percent)
         method(address).then((balance) => {
             const newAmount = percent ? (balance * percent / 100).toFixed(9) : ''
-            setFormAmount(newAmount)
+            setFormAmount(+newAmount)
         })
     }
 
@@ -56,6 +56,7 @@ const Swap = () => {
         setSelectQuoteValue(baseToken)
         setSelectBaseValue(quoteToken)
 
+        selectBaseValue === 'PRIZE' ? setSwapMethod('buy') : setSwapMethod('sell')
         handleChangePercent(activePercent, quoteToken)
     }
 
@@ -77,17 +78,8 @@ const Swap = () => {
     }
 
     const onSwap = () => {
-        contractService.checkAllowance(address, formAmount)
-            .then(() => {
-                contractService.createTokenTransaction(formAmount, address, swapMethod)
-                setFormAmount(0)
-            })
-            .catch(() => {
-                contractService.approveToken(address, (result) => {
-                    setIsApproving(false)
-                    setIsApproved(result)
-                })
-            })
+        contractService.createTokenTransaction(formAmount, address, swapMethod)
+        setFormAmount(0)
     }
 
     const onApprove = () => {

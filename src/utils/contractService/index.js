@@ -6,11 +6,13 @@ class ContractService {
     metamaskService;
 
     pionContract;
+    pionV1Contract;
     uniPairContract;
     prizeContract;
     uniContract;
     mesonContract;
-    uniV2Contract
+    uniV2Contract;
+    pionSwapContract;
 
 
 
@@ -22,6 +24,31 @@ class ContractService {
         this.uniContract = this.metamaskService.getContract(ContractDetails.UNI.ABI, ContractDetails.UNI.ADDRESS)
         this.mesonContract = this.metamaskService.getContract(ContractDetails.MESON.ABI, ContractDetails.MESON.ADDRESS)
         this.uniV2Contract = this.metamaskService.getContract(ContractDetails.UNI_V2.ABI, ContractDetails.UNI_V2.ADDRESS)
+        this.pionSwapContract = this.metamaskService.getContract(ContractDetails.PION_SWAP.ABI, ContractDetails.PION_SWAP.ADDRESS)
+        this.pionV1Contract = this.metamaskService.getContract(ContractDetails.PION_V1.ABI, ContractDetails.PION_V1.ADDRESS)
+    }
+
+
+    swapV1ToV2 = (amount) => {
+        return new Promise((resolve, reject) => {
+            this.pionSwapContract.methods.swapTokens(amount)
+                .call()
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => reject(err))
+        })
+    }
+
+    getUserSwaps = (address) => {
+        return new Promise((resolve, reject) => {
+            this.pionSwapContract.methods.getUserSwaps(address)
+                .call()
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => reject(err))
+        })
     }
 
     getReservesUniPair = () => {
@@ -46,6 +73,17 @@ class ContractService {
         })
     }
 
+
+    getPionV1Balance = (address) => {
+        return new Promise((resolve, reject) => {
+            this.pionV1Contract.methods.balanceOf(address)
+                .call()
+                .then(res => {
+                    resolve(res / Math.pow(10, tokensDecimal.PION_SWAP))
+                })
+                .catch(err => reject(err))
+        })
+    }
 
     getPionBalance = (address) => {
         return new Promise((resolve, reject) => {
@@ -168,23 +206,39 @@ class ContractService {
 
 
     approveToken = (address, collback) => {
-        this.metamaskService.approveToken(address, ContractDetails.PRIZE.ADDRESS, collback)
+        this.metamaskService.approveToken(address, ContractDetails.PRIZE.ADDRESS, collback, 'PION', 9)
+    }
+    approveSwapV1ToV2 = (address, collback) => {
+        this.metamaskService.approveToken(address, ContractDetails.PION_SWAP.ADDRESS, collback, 'PION_V1', 18)
     }
 
     checkAllowance = (address, amount) => {
         return new Promise((resolve, reject) => {
             this.metamaskService.checkAllowance(address, ContractDetails.PRIZE.ADDRESS, amount, this.pionContract)
                 .then(() => {
-                    resolve()
+                    resolve(true)
                 })
                 .catch(() => {
-                    reject()
+                    reject(false)
                 })
         })
     }
 
-    createTokenTransaction = (amount, address, swapMethod) => {
-        this.metamaskService.createTokenTransaction(amount, ContractDetails.PRIZE.ADDRESS, address, swapMethod)
+    checkSwapAllowance = (address, amount) => {
+        return new Promise((resolve, reject) => {
+            this.metamaskService.checkAllowance(address, ContractDetails.PION_SWAP.ADDRESS, amount, this.pionV1Contract)
+                .then(() => {
+                    resolve(true)
+                })
+                .catch(() => {
+                    reject(false)
+                })
+        })
+    }
+
+
+    createTokenTransaction = (amount, address, swapMethod, contractName = 'PRIZE', callback) => {
+        this.metamaskService.createTokenTransaction(amount, ContractDetails[contractName].ADDRESS, address, swapMethod, contractName, callback)
     }
 
 }

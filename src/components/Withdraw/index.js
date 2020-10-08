@@ -10,7 +10,7 @@ const Withdraw = ({ walletBalance, amountToWithdraw, rewardsClaimed, errorCode }
             <div className="deposit__amount">
                 <div className="deposit__amount-head">
                     <span>Enter Amount</span>
-                    <span>Deposited: {walletBalance} (UWETHAMPL-V2)</span>
+                    <span>Deposited: {walletBalance} (UNI-V2)</span>
                 </div>
                 <input type="number" value={amount} className="deposit__amount-input" placeholder="0.00" onChange={(e) => setAmount(e.target.value)} />
             </div>

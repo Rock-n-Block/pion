@@ -133,15 +133,17 @@ class MetamaskService {
         });
     }
 
-    getContributeTransaction(amount, tokenAddress, walletAddress, method) {
+    getContributeTransaction(amount, tokenAddress, walletAddress, method, contractName) {
 
+        debugger
         const stringAmountValue = new BigNumber(amount)
-            .times(Math.pow(10, tokensDecimal.PION))
+            .times(Math.pow(10, tokensDecimal[contractName]))
             .toString(10);
 
+        debugger
         const depositMethod = this.getMethodInterface(
             method,
-            ContractDetails.PRIZE.ABI
+            ContractDetails[contractName].ABI
         );
 
         const depositSignature = this.encodeFunctionCall(
@@ -149,6 +151,7 @@ class MetamaskService {
             [stringAmountValue]
         );
 
+        debugger
         const contributeTransaction = () => {
             return this.sendTransaction(
                 {
@@ -168,49 +171,51 @@ class MetamaskService {
     }
 
 
-    createTokenTransaction = (amount, tokenAddress, walletAddress, method) => {
-        const contributeData = this.getContributeTransaction(amount, tokenAddress, walletAddress, method);
+    createTokenTransaction = (amount, tokenAddress, walletAddress, method, contractName, callback) => {
+        const contributeData = this.getContributeTransaction(amount, tokenAddress, walletAddress, method, contractName);
+        debugger
         const transaction = {
             title:
-                'Make the transfer of 10 pion tokens to contract',
+                `Make the transfer of ${amount} pion tokens to contract`,
             to: tokenAddress,
             data: contributeData.signature,
             action: contributeData.action,
             ethValue: amount,
+            onCoplete: callback
         };
 
         this.createTransactionObj(transaction, walletAddress)
     }
 
-    approveToken = (walletAddress, tokenAddress, callback) => {
-        const approveMethod = this.getMethodInterface('approve', ContractDetails.PION.ABI);
-
+    approveToken = (walletAddress, tokenAddress, callback, contractName, decemals = 9) => {
+        const approveMethod = this.getMethodInterface('approve', ContractDetails[contractName].ABI);
+        debugger
         const approveSignature = this.encodeFunctionCall(
             approveMethod,
             [
                 tokenAddress,
                 new BigNumber(90071992.5474099)
-                    .times(Math.pow(10, Math.max(tokensDecimal.PION, 7)))
+                    .times(Math.pow(10, Math.max(decemals, 7)))
                     .toString(10),
             ]
         );
 
-
+        debugger
         const approveTransaction = () => {
             return this.sendTransaction(
                 {
                     from: walletAddress,
-                    to: ContractDetails.PION.ADDRESS,
+                    to: ContractDetails[contractName].ADDRESS,
                     data: approveSignature,
                 },
                 'metamask'
             );
         };
-
+        debugger
         const transaction = {
             title:
                 'Authorise the contract for getting prize tokens',
-            to: ContractDetails.PION.ADDRESS,
+            to: ContractDetails[contractName].ADDRESS,
             data: approveSignature,
             action: approveTransaction,
             onCoplete: callback
@@ -244,22 +249,6 @@ class MetamaskService {
             transaction
         );
     }
-
-    createTransaction(method) {
-        const interfaceMethod = this.getMethodInterface(
-            'getDistributionToken',
-            ContractDetails.MESON.ABI,
-        );
-        console.log(interfaceMethod)
-        const trxRequest = ['0x68E0C1dBF926cDa7A65ef2722e046746EB0f816f']
-
-        const activateSignature = this.encodeFunctionCall(
-            interfaceMethod,
-            trxRequest,
-        );
-        console.log(activateSignature)
-    }
-
 
     prepareTransaction(wallet, transaction) {
 
