@@ -1243,7 +1243,7 @@ export default {
         ]
     },
     PION_SWAP: {
-        ADDRESS: '0x3CdDA14D5e7142C43d9E05c9D3D9cd0BbD782683',
+        ADDRESS: '0x1bfd8a97bC5EA73bDefdbE6B69a6ed0Ad6B93a03',
         ABI: [
             {
                 "inputs": [
@@ -1666,7 +1666,7 @@ export default {
         ]
     },
     UNI_V2: {
-        ADDRESS: '0x13fa50E3e5e408CD2104D6b05E42316C3Be07B28',
+        ADDRESS: '0x0D7115FBc8B455C646ba7582082060379F00340c',
         ABI: [
             {
                 "inputs": [
@@ -3940,7 +3940,7 @@ export default {
         ]
     },
     MESON: {
-        ADDRESS: '0x706c6B77aF03b44c8cb5F4F1a5b46D8566bE164e',
+        ADDRESS: '0x0220D5eCAC41407538e1739D9Be67914043aE188',
         ABI: [
             {
                 "constant": false,

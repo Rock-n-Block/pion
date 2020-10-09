@@ -4,11 +4,12 @@ import './Deposit.scss'
 
 import RewardsImg from '../../assets/img/rewards-img.svg';
 import RewardsImgLight from '../../assets/img/rewards-img-light.svg';
+import Spiner from '../../assets/img/oval.svg';
 
-const Deposit = ({ lightTheme, onDeposit, walletBalance, errorCode, reward }) => {
+const Deposit = ({ lightTheme, onDeposit, walletBalance, errorCode, reward, isApproved, isApproving, handleApprove }) => {
     const [amount, setAmount] = React.useState('')
 
-    const onBtnClick = () => {
+    const handleDepositClick = () => {
         onDeposit(amount)
         setAmount(0.00)
     }
@@ -29,7 +30,12 @@ const Deposit = ({ lightTheme, onDeposit, walletBalance, errorCode, reward }) =>
                     <div className="deposit__rewards-content">{reward} PION</div>
                 </div>
             </div>
-            <button className="deposit__btn btn btn--big" onClick={onBtnClick} disabled={!amount || amount == '0' || errorCode}>Deposit</button>
+            {/* <button className="deposit__btn btn btn--big" onClick={onBtnClick} disabled={!amount || amount == '0' || errorCode}>Deposit</button> */}
+            {isApproved ? <button className="deposit__btn btn btn--big" onClick={handleDepositClick} disabled={!amount || amount == '0' || errorCode}>Deposit</button> :
+                <button className="btn btn--big" onClick={handleApprove} disabled={isApproving}>
+                    {isApproving && <img src={Spiner} alt="" />}
+                    <span>{isApproving ? 'Waiting' : 'Approve'}</span>
+                </button>}
         </div>
     );
 }

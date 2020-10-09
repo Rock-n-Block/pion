@@ -78,8 +78,9 @@ const Swap = () => {
     }
 
     const onSwap = () => {
-        contractService.createTokenTransaction(formAmount, address, swapMethod)
+        contractService.createTokenTransaction({ data: formAmount, address, swapMethod: swapMethod })
         setFormAmount(0)
+        setActivePercent(0)
     }
 
     const onApprove = () => {

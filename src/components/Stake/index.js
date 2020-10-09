@@ -1,14 +1,13 @@
 import React from 'react';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
-import MetamaskService from '../../utils/web3';
 import ContractService from '../../utils/contractService';
-import ContractDetails from '../../utils/web3/contract-details';
 import tokensDecimal from '../../utils/web3/decimals';
 
 import { Deposit, Withdraw, Stats } from '../../components';
 
 import './Stake.scss'
+import decimals from '../../utils/web3/decimals';
 
 const Stake = () => {
 
@@ -25,6 +24,8 @@ const Stake = () => {
     const [unlockedRewards, setUnlockedRewards] = React.useState(0)
     const [totalProgramDuration, setTotalProgramDuration] = React.useState(0)
     const [accruedReward, setAccruedReward] = React.useState('0.00')
+    const [isDepositAllowance, setIsDepositAllowance] = React.useState(false)
+    const [isDepositAllowancing, setIsDepositAllowancing] = React.useState(false)
 
     const tabs = ['Deposit', 'Withdraw', 'Stats']
 
@@ -39,6 +40,7 @@ const Stake = () => {
     });
 
     const updateData = () => {
+        contractService.checkUniAllowance(address, 0).then(res => setIsDepositAllowance(res)).catch(err => setIsDepositAllowance(err))
         contractService.getUniV2Balance(address)
             .then(res => {
                 setWalleUniV2Balance(res)
@@ -106,13 +108,23 @@ const Stake = () => {
     }, [])
 
     const onDeposit = (amount) => {
-        contractService.stake(amount)
-            .then(() => {
-                if (!errorCode) {
-                    updateData()
-                }
-            })
-            .catch(err => console.log(err))
+        contractService.createTokenTransaction({
+            data: amount,
+            address,
+            swapMethod: 'stake',
+            contractName: 'MESON',
+            callback: () => { updateData() },
+            stake: '0x0000000000000000000000000000000000000000'
+        })
+    }
+
+    const handleDepositApprove = () => {
+        setIsDepositAllowancing(true)
+
+        contractService.approveUniToken(address, (result) => {
+            setIsDepositAllowancing(false)
+            setIsDepositAllowance(result)
+        })
     }
 
     return (
@@ -131,9 +143,12 @@ const Stake = () => {
                     <Deposit
                         lightTheme={lightTheme}
                         onDeposit={onDeposit}
-                        walletBalance={walletUniV2Balance}
+                        walletBalance={walletUniV2Balance / Math.pow(10, decimals.UNI_V2)}
                         errorCode={errorCode}
                         reward={accruedReward}
+                        isApproved={isDepositAllowance}
+                        isApproving={isDepositAllowancing}
+                        handleApprove={handleDepositApprove}
                     />
                 }
                 {activeTab === 1 &&

@@ -133,14 +133,12 @@ class MetamaskService {
         });
     }
 
-    getContributeTransaction(amount, tokenAddress, walletAddress, method, contractName) {
+    getContributeTransaction({ data, tokenAddress, walletAddress, method, contractName, withdraw, stake }) {
 
-        debugger
-        const stringAmountValue = new BigNumber(amount)
+        const transactionData = withdraw ? data : new BigNumber(data)
             .times(Math.pow(10, tokensDecimal[contractName]))
             .toString(10);
 
-        debugger
         const depositMethod = this.getMethodInterface(
             method,
             ContractDetails[contractName].ABI
@@ -148,10 +146,10 @@ class MetamaskService {
 
         const depositSignature = this.encodeFunctionCall(
             depositMethod,
-            [stringAmountValue]
+            stake ? [transactionData, stake] : [transactionData]
         );
 
-        debugger
+
         const contributeTransaction = () => {
             return this.sendTransaction(
                 {
@@ -171,25 +169,38 @@ class MetamaskService {
     }
 
 
-    createTokenTransaction = (amount, tokenAddress, walletAddress, method, contractName, callback) => {
-        const contributeData = this.getContributeTransaction(amount, tokenAddress, walletAddress, method, contractName);
-        debugger
-        const transaction = {
-            title:
-                `Make the transfer of ${amount} pion tokens to contract`,
-            to: tokenAddress,
-            data: contributeData.signature,
-            action: contributeData.action,
-            ethValue: amount,
-            onCoplete: callback
-        };
+    createTokenTransaction = ({ data, tokenAddress, walletAddress, method, contractName, callback, withdraw, stake }) => {
+        const contributeData = this.getContributeTransaction({ data, tokenAddress, walletAddress, method, contractName, withdraw, stake });
+
+        let transaction = {}
+
+        if (withdraw) {
+            transaction = {
+                title:
+                    `Make the withdraw`,
+                to: tokenAddress,
+                data: contributeData.signature,
+                action: contributeData.action,
+                onCoplete: callback
+            };
+        } else {
+            transaction = {
+                title:
+                    `Make the transfer of ${data} pion tokens to contract`,
+                to: tokenAddress,
+                data: contributeData.signature,
+                action: contributeData.action,
+                ethValue: data,
+                onCoplete: callback
+            };
+        }
 
         this.createTransactionObj(transaction, walletAddress)
     }
 
     approveToken = (walletAddress, tokenAddress, callback, contractName, decemals = 9) => {
         const approveMethod = this.getMethodInterface('approve', ContractDetails[contractName].ABI);
-        debugger
+
         const approveSignature = this.encodeFunctionCall(
             approveMethod,
             [
@@ -200,7 +211,7 @@ class MetamaskService {
             ]
         );
 
-        debugger
+
         const approveTransaction = () => {
             return this.sendTransaction(
                 {
@@ -211,7 +222,7 @@ class MetamaskService {
                 'metamask'
             );
         };
-        debugger
+
         const transaction = {
             title:
                 'Authorise the contract for getting prize tokens',
@@ -256,12 +267,16 @@ class MetamaskService {
             .action(wallet)
             .then((result) => {
                 if (transaction.onCoplete) {
-                    transaction.onCoplete(true)
+                    setTimeout(() => {
+                        transaction.onCoplete(true)
+                    }, 1000)
                 }
             })
             .catch(err => {
                 if (transaction.onCoplete) {
-                    transaction.onCoplete(false)
+                    setTimeout(() => {
+                        transaction.onCoplete(false)
+                    }, 1000)
                 }
             })
     }

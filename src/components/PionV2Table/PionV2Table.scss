@@ -3,11 +3,14 @@
   &__box {
     display: flex;
     align-items: center;
-    background: rgba(255, 255, 255, 0.05);
     border-radius: 4px;
     padding: 10px 10px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
     & + & {
       margin-left: 10px;
+    }
+    &.active {
+      background: rgba(255, 255, 255, 0.05);
     }
     .v2-table__item-elem + .v2-table__item-elem {
       margin-left: 10px;
@@ -55,6 +58,7 @@
       &.active {
         border: none;
         cursor: default;
+        padding-right: 8px;
         span {
           margin-left: 4px;
           color: $orange;

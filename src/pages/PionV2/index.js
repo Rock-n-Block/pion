@@ -18,7 +18,7 @@ const PionV2 = () => {
     const [isApproved, setIsApproved] = React.useState(true)
     const [isApproving, setIsApproving] = React.useState(false)
 
-    const [swapsId, setSwapsId] = React.useState([])
+    const [swapsData, setSwapsData] = React.useState([])
 
 
     const { lightTheme, address, errorCode } = useSelector((state) => {
@@ -30,14 +30,53 @@ const PionV2 = () => {
     });
 
     const updateData = () => {
+        const tableData = []
         if (address) {
             contractService.getPionV1Balance(address).then(balance => {
                 setWalletBalance(balance)
             })
 
-            contractService.getUserSwaps(address)
-                .then(res => setSwapsId(res))
+            contractService.swapPeriod()
+                .then(time => {
+                    contractService.getUserSwaps(address)
+                        .then(res => {
+
+                            const promiseItems = res.map(item => contractService.swapsById(item))
+
+                            Promise.all([...promiseItems]).then(values => {
+                                values.map((result, index) => {
+                                    const dataItem = {
+                                        address: res[index],
+                                        amount: result.totalAmount,
+                                        deposit: result.initialTime,
+                                        withdrawAmount: result.withdrawnAmount,
+                                        percent: (result.totalAmount / 4),
+                                        items: [
+                                            {
+                                                date: +result.initialTime + +time,
+                                                percent: (result.totalAmount / 4),
+                                            },
+                                            {
+                                                date: +result.initialTime + +time * 2,
+                                                percent: (result.totalAmount / 4),
+                                            },
+                                            {
+                                                date: +result.initialTime + +time * 3,
+                                                percent: (result.totalAmount / 4),
+                                            },
+                                        ]
+                                    }
+                                    tableData.push(dataItem)
+                                })
+                                setSwapsData(tableData.reverse())
+                            });
+
+
+                        })
+                        .catch(err => console.log(err))
+                })
                 .catch(err => console.log(err))
+
         }
     }
 
@@ -46,15 +85,13 @@ const PionV2 = () => {
     }
 
     const onSwap = () => {
-        console.log(amount)
-        contractService.createTokenTransaction(amount, address, 'swapTokens', 'PION_SWAP', () => {
-            debugger
-            updateData()
+        contractService.createTokenTransaction({
+            data: amount,
+            address,
+            swapMethod: 'swapTokens',
+            contractName: 'PION_SWAP',
+            callback: () => { updateData() }
         })
-
-        // contractService.swapV1ToV2(amount)
-        //     .then(res => console.log(res, 'res'))
-        //     .catch(err => console.log(err))
     }
     const onApprove = () => {
         setIsApproving(true)
@@ -62,6 +99,16 @@ const PionV2 = () => {
         contractService.approveSwapV1ToV2(address, (result) => {
             setIsApproving(false)
             setIsApproved(result)
+        })
+    }
+
+    const handleWithdraw = (swapId) => {
+        contractService.createTokenTransaction({
+            data: swapId, address,
+            swapMethod: 'withdrawRemainingTokens',
+            contractName: 'PION_SWAP',
+            callback: () => { updateData() },
+            withdraw: true
         })
     }
 
@@ -108,7 +155,7 @@ const PionV2 = () => {
                         <span>{isApproving ? 'Waiting' : 'Approve'}</span>
                     </button>}
             </div>
-            <PionV2Table lightTheme={lightTheme} />
+            <PionV2Table lightTheme={lightTheme} data={swapsData} handleWithdraw={handleWithdraw} />
         </div>
     );
 }

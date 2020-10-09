@@ -25,7 +25,7 @@ const History = () => {
     }
 
     const dateFormat = (date) => {
-        return format(new Date(date * 1000), 'd.MM.Y hh:mm')
+        return format(new Date(date * 1000), 'd.MM.Y hh:mm 	aa')
     }
 
     const handlePageChange = (page) => {
