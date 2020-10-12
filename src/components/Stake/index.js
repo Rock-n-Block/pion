@@ -13,10 +13,10 @@ const Stake = () => {
 
     const [contractService] = React.useState(new ContractService())
 
-    const [walletPionBalance, setWallePiontBalance] = React.useState(0)
     const [walletUniBalance, setWalleUniBalance] = React.useState(0)
     const [walletUniV2Balance, setWalleUniV2Balance] = React.useState(0)
     const [amountToWithdraw, setAmountToWithdraw] = React.useState(0)
+    const [withdrawReward, setWithdrawReward] = React.useState(0)
     const [rewardsClaimed, setRewardsClaimed] = React.useState(0)
     const [totalRewards, setTotalRewards] = React.useState(0)
     const [totalDeposit, setTotalDeposit] = React.useState(0)
@@ -24,6 +24,7 @@ const Stake = () => {
     const [unlockedRewards, setUnlockedRewards] = React.useState(0)
     const [totalProgramDuration, setTotalProgramDuration] = React.useState(0)
     const [accruedReward, setAccruedReward] = React.useState('0.00')
+
     const [isDepositAllowance, setIsDepositAllowance] = React.useState(false)
     const [isDepositAllowancing, setIsDepositAllowancing] = React.useState(false)
 
@@ -47,12 +48,6 @@ const Stake = () => {
             })
             .catch(err => console.log(err))
 
-        contractService.getPionBalance(address)
-            .then(res => {
-                setWallePiontBalance(res)
-            })
-            .catch(err => console.log(err))
-
         contractService.getUniBalance(address)
             .then(res => {
                 setWalleUniBalance(res)
@@ -65,7 +60,7 @@ const Stake = () => {
             })
             .catch(err => console.log(err))
 
-        contractService.updateAccounting()
+        contractService.totalRewardsClaimed(address)
             .then(res => {
                 setRewardsClaimed(res)
             })
@@ -94,11 +89,26 @@ const Stake = () => {
             })
             .catch(err => console.log(err))
 
-        contractService.calculateRewardFor(address)
+        calculateRewardFor(amountToWithdraw)
             .then(res => {
                 setAccruedReward(res)
             })
             .catch(err => console.log(err))
+    }
+
+    const calculateRewardFor = (amount) => {
+        return contractService.calculateRewardFor(address, (amount * Math.pow(10, decimals.UNI_V2)))
+    }
+
+    const calculateWithdrawReward = (amount) => {
+        calculateRewardFor(+amount)
+            .then(res => {
+                setWithdrawReward(res)
+            })
+            .catch(err => {
+                console.log(err)
+                setWithdrawReward(0)
+            })
     }
 
     React.useEffect(() => {
@@ -113,7 +123,26 @@ const Stake = () => {
             address,
             swapMethod: 'stake',
             contractName: 'MESON',
-            callback: () => { updateData() },
+            callback: () => {
+                setTimeout(() => {
+                    updateData()
+                }, 1000)
+            },
+            stake: '0x0000000000000000000000000000000000000000'
+        })
+    }
+
+    const onWithdraw = (amount) => {
+        contractService.createTokenTransaction({
+            data: amount,
+            address,
+            swapMethod: 'unstake',
+            contractName: 'MESON',
+            callback: () => {
+                setTimeout(() => {
+                    updateData()
+                }, 1000)
+            },
             stake: '0x0000000000000000000000000000000000000000'
         })
     }
@@ -145,7 +174,7 @@ const Stake = () => {
                         onDeposit={onDeposit}
                         walletBalance={walletUniV2Balance / Math.pow(10, decimals.UNI_V2)}
                         errorCode={errorCode}
-                        reward={accruedReward}
+                        reward={accruedReward / Math.pow(10, decimals.UNI_V2)}
                         isApproved={isDepositAllowance}
                         isApproving={isDepositAllowancing}
                         handleApprove={handleDepositApprove}
@@ -154,17 +183,19 @@ const Stake = () => {
                 {activeTab === 1 &&
                     <Withdraw
                         lightTheme={lightTheme}
-                        walletBalance={walletUniBalance}
-                        amountToWithdraw={amountToWithdraw}
-                        rewardsClaimed={rewardsClaimed}
+                        walletBalance={amountToWithdraw / Math.pow(10, decimals.UNI_V2)}
+                        withdrawReward={withdrawReward / Math.pow(10, decimals.PION)}
+                        getAmountToWithdrow={calculateWithdrawReward}
+                        rewardsClaimed={rewardsClaimed / Math.pow(10, decimals.PION)}
                         errorCode={errorCode}
+                        onWithdraw={onWithdraw}
                     />
                 }
                 {activeTab === 2 &&
                     <Stats lightTheme={lightTheme}
-                        totalRewards={totalRewards}
-                        totalDeposit={totalDeposit}
-                        lockedRewards={lockedRewards}
+                        totalRewards={totalRewards / Math.pow(10, decimals.UNI_V2)}
+                        totalDeposit={totalDeposit / Math.pow(10, decimals.UNI_V2)}
+                        lockedRewards={lockedRewards / Math.pow(10, decimals.UNI_V2)}
                         unlockedRewards={unlockedRewards}
                         totalProgramDuration={totalProgramDuration}
                     />

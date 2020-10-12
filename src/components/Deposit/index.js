@@ -14,6 +14,10 @@ const Deposit = ({ lightTheme, onDeposit, walletBalance, errorCode, reward, isAp
         setAmount(0.00)
     }
 
+    const handleSendMax = () => {
+        setAmount(walletBalance)
+    }
+
     return (
         <div className="deposit">
             <div className="deposit__amount">
@@ -21,7 +25,10 @@ const Deposit = ({ lightTheme, onDeposit, walletBalance, errorCode, reward, isAp
                     <span>Enter Amount</span>
                     <span>Wallet balance: {walletBalance}</span>
                 </div>
-                <input type="number" className="deposit__amount-input" placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} />
+                <div className="deposit__box">
+                    <input type="number" className="deposit__amount-input" placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} />
+                    <div className="deposit__max" onClick={handleSendMax}>Send Max</div>
+                </div>
             </div>
             <div className="deposit__rewards">
                 {lightTheme ? <img src={RewardsImgLight} alt="" /> : <img src={RewardsImg} alt="" />}

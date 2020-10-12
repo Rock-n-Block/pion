@@ -1,5 +1,22 @@
 @import '../../styles/var.scss';
 .deposit {
+  &__box {
+    display: flex;
+    align-items: center;
+  }
+  &__max {
+    color: $text;
+    font-size: 10px;
+    line-height: 12px;
+    font-family: MonM;
+    padding: 7px 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    height: fit-content;
+    cursor: pointer;
+    width: 75px;
+    margin-top: 7px;
+  }
   &__rewards {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;

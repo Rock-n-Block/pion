@@ -129,6 +129,18 @@ class ContractService {
         })
     }
 
+    totalRewardsClaimed = (address) => {
+        return new Promise((resolve, reject) => {
+            this.mesonContract.methods.totalRewardsClaimed(address)
+                .call()
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => reject(err))
+        })
+    }
+
+
 
 
 
@@ -209,9 +221,9 @@ class ContractService {
         })
     }
 
-    calculateRewardFor = (address) => {
+    calculateRewardFor = (address, amount) => {
         return new Promise((resolve, reject) => {
-            this.mesonContract.methods.calculateRewardFor(address)
+            this.mesonContract.methods.calculateRewardFor(address, amount)
                 .call()
                 .then(res => {
                     resolve(res)

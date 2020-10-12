@@ -14,7 +14,7 @@ const PionV2TableRow = ({ item, lightTheme, handleWithdraw }) => {
     const [isWithdraw, setIsWithdraw] = React.useState(false)
 
     const dateFormat = (date) => {
-        return format(new Date(date * 1000), 'd.MM.Y')
+        return format(new Date(date * 1000), 'dd.MM.Y')
     }
     const numberWithCommas = (number) => {
         var parts = number.toString().split(".");

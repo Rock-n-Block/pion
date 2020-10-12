@@ -3940,7 +3940,7 @@ export default {
         ]
     },
     MESON: {
-        ADDRESS: '0x0220D5eCAC41407538e1739D9Be67914043aE188',
+        ADDRESS: '0x855c6c914bf5fd52c4Da786e7A43418AFe3AE1ad',
         ABI: [
             {
                 "constant": false,
@@ -4191,25 +4191,6 @@ export default {
             {
                 "constant": true,
                 "inputs": [
-                    {
-                        "name": "user",
-                        "type": "address"
-                    }
-                ],
-                "name": "calculateRewardFor",
-                "outputs": [
-                    {
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "constant": true,
-                "inputs": [
 
                 ],
                 "name": "supportsHistory",
@@ -4290,6 +4271,29 @@ export default {
 
                 ],
                 "name": "totalLockedShares",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [
+                    {
+                        "name": "user",
+                        "type": "address"
+                    },
+                    {
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "calculateRewardFor",
                 "outputs": [
                     {
                         "name": "",
@@ -4453,6 +4457,25 @@ export default {
                 ],
                 "payable": false,
                 "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [
+                    {
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "name": "totalRewardsClaimed",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
                 "type": "function"
             },
             {
