@@ -1,19 +1,27 @@
 import React from 'react';
+import { InputNumber } from 'antd';
 
 import './Withdraw.scss'
 
-const Withdraw = ({ walletBalance, withdrawReward, rewardsClaimed, errorCode, getAmountToWithdrow, onWithdraw }) => {
+const Withdraw = ({ walletBalance, rewardsClaimed, errorCode, reward, onWithdraw, handleCalculateWithdrawReward, calculatedWithdrawReward }) => {
     const [amount, setAmount] = React.useState('')
 
-    const handleInputChange = (e) => {
-        getAmountToWithdrow(e.target.value)
-        setAmount(e.target.value)
+    const handleInputChange = (value) => {
+        setAmount(value)
+
+        handleCalculateWithdrawReward(value)
     }
 
     const handleSendMax = () => {
         setAmount(walletBalance)
+
+        handleCalculateWithdrawReward(walletBalance)
     }
 
+    const handleWithdraw = () => {
+        onWithdraw(amount)
+        setAmount('')
+    }
 
     return (
         <div className="withdraw">
@@ -23,7 +31,7 @@ const Withdraw = ({ walletBalance, withdrawReward, rewardsClaimed, errorCode, ge
                     <span>Deposited: {walletBalance} (UNI-V2)</span>
                 </div>
                 <div className="deposit__box">
-                    <input type="number" value={amount} className="deposit__amount-input" placeholder="0.00" onChange={handleInputChange} />
+                    <InputNumber type="number" value={amount} max={walletBalance} min={0} className="deposit__amount-input" placeholder="0.00" onChange={handleInputChange} />
                     <div className="deposit__max" onClick={handleSendMax}>Send Max</div>
                 </div>
             </div>
@@ -31,7 +39,7 @@ const Withdraw = ({ walletBalance, withdrawReward, rewardsClaimed, errorCode, ge
                 <div className="deposit__rewards withdraw__rewards">
                     <div className="withdraw__rewards-wrapper">
                         <div className="deposit__rewards-title">Accrued Reward</div>
-                        <div className="deposit__rewards-content">{withdrawReward || '0.00'} PION</div>
+                        <div className="deposit__rewards-content">{(amount ? calculatedWithdrawReward : reward) || '0.00'} PION</div>
                     </div>
                 </div>
                 <div className="deposit__rewards withdraw__rewards">
@@ -41,7 +49,7 @@ const Withdraw = ({ walletBalance, withdrawReward, rewardsClaimed, errorCode, ge
                     </div>
                 </div>
             </div>
-            <button className="deposit__btn btn btn--big" onClick={() => onWithdraw(amount)} disabled={!amount || amount == '0' || errorCode}>Withdraw</button>
+            <button className="deposit__btn btn btn--big" onClick={handleWithdraw} disabled={!amount || amount == '0' || errorCode || amount > walletBalance}>Withdraw</button>
         </div>
     );
 }

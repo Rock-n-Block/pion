@@ -78,3 +78,19 @@
     }
   }
 }
+
+@media only screen and (max-width: 991px) {
+  .stake {
+    &__navbar {
+      background: #1b1a19;
+    }
+  }
+
+  .lighttheme {
+    .stake {
+      &__navbar {
+        background: transparent;
+      }
+    }
+  }
+}

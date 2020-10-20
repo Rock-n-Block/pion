@@ -36,7 +36,6 @@
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
     cursor: pointer;
-    margin-top: 7px;
     min-width: 66px;
   }
   &__text {
@@ -55,6 +54,19 @@
     &__text {
       color: $lighttext;
       opacity: 0.5;
+    }
+  }
+}
+
+@media only screen and (max-width: 991px) {
+  .v2 {
+    padding: 0 10px;
+    &__title {
+      font-size: 18px;
+      line-height: 24px;
+      width: max-content;
+      text-align: center;
+      width: 100%;
     }
   }
 }

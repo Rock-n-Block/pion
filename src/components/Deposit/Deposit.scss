@@ -3,19 +3,20 @@
   &__box {
     display: flex;
     align-items: center;
+    margin-top: 15px;
   }
   &__max {
     color: $text;
     font-size: 10px;
     line-height: 12px;
     font-family: MonM;
+    margin-left: auto;
     padding: 7px 8px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
     height: fit-content;
     cursor: pointer;
-    width: 75px;
-    margin-top: 7px;
+    width: 70px;
   }
   &__rewards {
     background: rgba(255, 255, 255, 0.1);
@@ -55,6 +56,16 @@
     }
     &-input {
       margin-top: 5px;
+      background: transparent !important;
+      width: 85% !important;
+      border: none !important;
+      box-shadow: none !important;
+      .ant-input-number-handler-wrap {
+        display: none !important;
+      }
+      input {
+        padding: 0 !important;
+      }
     }
   }
 }
@@ -84,6 +95,7 @@
   .deposit {
     &__amount {
       padding: 13px 15px;
+      background: #1b1a19;
     }
     &__rewards {
       padding: 20px 23px;

@@ -1,6 +1,9 @@
 import MetamaskService from '../web3';
 import ContractDetails from '..//web3/contract-details';
 import tokensDecimal from '..//web3/decimals';
+import decimals from '..//web3/decimals';
+import BigNumber from "bignumber.js"
+import contractDetails from '..//web3/contract-details';
 
 class ContractService {
     metamaskService;
@@ -13,6 +16,7 @@ class ContractService {
     mesonContract;
     uniV2Contract;
     pionSwapContract;
+    uniswapV2Router02;
 
 
 
@@ -26,6 +30,7 @@ class ContractService {
         this.uniV2Contract = this.metamaskService.getContract(ContractDetails.UNI_V2.ABI, ContractDetails.UNI_V2.ADDRESS)
         this.pionSwapContract = this.metamaskService.getContract(ContractDetails.PION_SWAP.ABI, ContractDetails.PION_SWAP.ADDRESS)
         this.pionV1Contract = this.metamaskService.getContract(ContractDetails.PION_V1.ABI, ContractDetails.PION_V1.ADDRESS)
+        this.uniswapV2Router02 = this.metamaskService.getContract(ContractDetails.UNI_V2_ROUTER_02.ABI, ContractDetails.UNI_V2_ROUTER_02.ADDRESS)
     }
 
 
@@ -51,6 +56,17 @@ class ContractService {
         })
     }
 
+    estimateMaxReward = (amount) => {
+        return new Promise((resolve, reject) => {
+            this.mesonContract.methods.estimateMaxReward(amount)
+                .call()
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => reject(err))
+        })
+    }
+
     getReservesUniPair = () => {
         return new Promise((resolve, reject) => {
             this.uniPairContract.methods.getReserves()
@@ -61,6 +77,18 @@ class ContractService {
                 .catch(err => reject(err))
         })
     }
+
+    getAmountsOut = () => {
+        return new Promise((resolve, reject) => {
+            this.uniswapV2Router02.methods.getAmountsOut(1000000000, [contractDetails.PION.ADDRESS, contractDetails.WETH.ADDRESS])
+                .call()
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => reject(err))
+        })
+    }
+
 
     getUniV2Balance = (address) => {
         return new Promise((resolve, reject) => {

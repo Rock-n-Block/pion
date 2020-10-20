@@ -121,3 +121,27 @@
     }
   }
 }
+
+@media only screen and (max-width: 991px) {
+  .history {
+    &__box {
+      grid-template-columns: 1fr 1fr 60px;
+    }
+    &__item {
+      padding-bottom: 42px;
+      position: relative;
+      &-date {
+        position: absolute;
+        bottom: 12px;
+        left: 24px;
+      }
+    }
+    &__head {
+      &-item {
+        &-date {
+          display: none;
+        }
+      }
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { InputNumber } from 'antd';
 
 import ContractService from '../../utils/contractService';
 import { PionV2Table } from '../../components';
@@ -40,7 +41,6 @@ const PionV2 = () => {
                 .then(time => {
                     contractService.getUserSwaps(address)
                         .then(res => {
-
                             const promiseItems = res.map(item => contractService.swapsById(item))
 
                             Promise.all([...promiseItems]).then(values => {
@@ -90,8 +90,13 @@ const PionV2 = () => {
             address,
             swapMethod: 'swapTokens',
             contractName: 'PION_SWAP',
-            callback: () => { updateData() }
+            callback: () => {
+                setTimeout(() => {
+                    updateData()
+                }, 1000)
+            }
         })
+        setAmount('')
     }
     const onApprove = () => {
         setIsApproving(true)
@@ -107,7 +112,11 @@ const PionV2 = () => {
             data: swapId, address,
             swapMethod: 'withdrawRemainingTokens',
             contractName: 'PION_SWAP',
-            callback: () => { updateData() },
+            callback: () => {
+                setTimeout(() => {
+                    updateData()
+                }, 1000)
+            },
             withdraw: true
         })
     }
@@ -141,15 +150,15 @@ const PionV2 = () => {
                         <span>Enter Amount</span>
                         <span>Wallet balance: {walletBalance}</span>
                     </div>
-                    <div className="v2__input">
-                        <input max={walletBalance} type="number" className="deposit__amount-input" placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} />
+                    <div className="v2__input deposit__box">
+                        <InputNumber max={walletBalance} type="number" className="deposit__amount-input" placeholder="0.00" value={amount} onChange={(value) => setAmount(value)} />
                         <div className="v2__max" onClick={handleSendMax}>Send Max</div>
                     </div>
                 </div>
                 <div className="v2__text">
                     Exchange your Pion v1 tokens for Pion v2 to start the interaction with the platform. The swap will take place in 4 rounds: you will receive 25% of Pion v2 immediately, the remaining 75% can be taken in equal parts - 25% each month from the date of the swap. The exact withdrawal dates will be indicated on the website.
                 </div>
-                {isApproved ? <button className="btn btn--big" onClick={onSwap} disabled={!amount || errorCode}>SWAP</button> :
+                {isApproved ? <button className="btn btn--big" onClick={onSwap} disabled={!amount || errorCode || amount > walletBalance}>SWAP</button> :
                     <button className="btn btn--big" onClick={onApprove} disabled={isApproving}>
                         {isApproving && <img src={Spiner} alt="" />}
                         <span>{isApproving ? 'Waiting' : 'Approve'}</span>

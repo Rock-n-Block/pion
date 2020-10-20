@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Select } from 'antd';
+import { Select, InputNumber } from 'antd';
 import { useSelector } from 'react-redux';
 import ContractService from '../../utils/contractService';
 
@@ -27,6 +27,9 @@ const Swap = () => {
     const [isApproved, setIsApproved] = React.useState(true)
     const [isApproving, setIsApproving] = React.useState(false)
 
+    const [pionWalletBalance, setPionWalletBalance] = React.useState(0)
+    const [prizeWalletBalance, setPrizeWalletBalance] = React.useState(0)
+
     const percentItems = [10, 25, 50, 75, 100]
 
     const [activePercent, setActivePercent] = React.useState(0)
@@ -45,7 +48,8 @@ const Swap = () => {
         setActivePercent(percent)
         method(address).then((balance) => {
             const newAmount = percent ? (balance * percent / 100).toFixed(9) : ''
-            setFormAmount(+newAmount)
+            setFormAmount(+newAmount ? +newAmount : '')
+            return
         })
     }
 
@@ -101,13 +105,24 @@ const Swap = () => {
                 .catch(() => {
                     setIsApproved(false)
                 })
+            contractService.getPionBalance(address).then((balance) => {
+                setPionWalletBalance(balance.toFixed(9))
+            })
+            contractService.getPrizeBalance(address).then((balance) => {
+                setPrizeWalletBalance(balance.toFixed(9))
+            })
         }
 
-        contractService.getReservesUniPair()
+        contractService.getAmountsOut()
             .then(res => {
                 setRatio(res)
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                console.log(err)
+            })
+
+
+
     }, [address])
 
     return (
@@ -153,7 +168,7 @@ const Swap = () => {
                             </Option>
                         </Select>
                     </div>
-                    <div className="swap__item-ratio">1 PION = ${ratio} USD</div>
+                    <div className="swap__item-ratio">1 PION = ${ratio.toString().slice(9)} USD</div>
                 </div>
                 {
                     lightTheme ? <img src={SwapLightImg} alt="" className="swap__img" onClick={handleMoveTokens} /> : <img src={SwapImg} alt="" className="swap__img" onClick={handleMoveTokens} />
@@ -192,15 +207,13 @@ const Swap = () => {
                     </div>
                     <div className="swap__item-ratio">1 PION = 1 PRIZE (fee 2%)</div>
                 </div>
-                {isApproved ? <button className="swap__btn btn btn--big" onClick={onSwap} disabled={formAmount == '0' || !formAmount || errorCode}>SWAP</button> :
+                {isApproved ? <button className="swap__btn btn btn--big" onClick={onSwap}
+                    disabled={formAmount == '0' || !formAmount || errorCode || (selectBaseValue === 'PION' ? (formAmount > pionWalletBalance) : (formAmount > prizeWalletBalance))}
+                >SWAP</button> :
                     <button className="swap__btn btn btn--big" onClick={onApprove} disabled={isApproving}>
                         {isApproving && <img src={Spiner} alt="" />}
                         <span>{isApproving ? 'Waiting' : 'Approve'}</span>
                     </button>}
-                {/* <div className="swap__price">
-                    <span>Price Block: </span>
-                    <span>29410</span>
-                </div> */}
             </div>
         </div>
     );

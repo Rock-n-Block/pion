@@ -78,7 +78,7 @@ const PionV2TableRow = ({ item, lightTheme, handleWithdraw }) => {
                 })}>
                     {!lightTheme && +item.amount === +item.withdrawAmount && <img src={isOkImg} />}
                     {lightTheme && +item.amount === +item.withdrawAmount && <img src={isOkImgLight} />}
-                    <span>Withdraw</span>
+                    <span>{+item.amount === +item.withdrawAmount ? 'Withdrawn' : 'Withdraw'}</span>
                 </button>
             </div>
         </div>

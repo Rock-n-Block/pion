@@ -166,6 +166,7 @@ input[type='number'] {
 }
 @media only screen and (max-width: 991px) {
   .pion {
+    background-image: none;
     &__content {
       padding: 0 10px;
       margin: 0;

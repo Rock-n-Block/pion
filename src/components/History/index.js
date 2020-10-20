@@ -25,7 +25,7 @@ const History = () => {
     }
 
     const dateFormat = (date) => {
-        return format(new Date(date * 1000), 'd.MM.Y hh:mm 	aa')
+        return format(new Date(date * 1000), 'dd.MM.Y hh:mm aa')
     }
 
     const handlePageChange = (page) => {
@@ -74,7 +74,7 @@ const History = () => {
                                 }
                                 {(item.total_supply / Math.pow(10, 9)).toFixed(2)}
                             </div>
-                            <div className="history__item-price">$ {(item.usd_price / Math.pow(10, 18)).toFixed(2)}</div>
+                            <div className="history__item-price">$ {(item.usd_price / Math.pow(10, 18)).toFixed(8)}</div>
                             <div className="history__item-сpi">{(item.cpi_value / Math.pow(10, 18)).toFixed(3)}</div>
                         </div>
                     })
