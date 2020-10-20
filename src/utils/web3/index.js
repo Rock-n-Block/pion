@@ -133,7 +133,7 @@ class MetamaskService {
         });
     }
 
-    getContributeTransaction({ data, tokenAddress, walletAddress, method, contractName, withdraw, stake }) {
+    getContributeTransaction({ data, tokenAddress, walletAddress, method, contractName, withdraw, stake, callback }) {
 
         const transactionData = withdraw ? data : new BigNumber(data)
             .times(Math.pow(10, tokensDecimal[contractName]))
@@ -157,10 +157,10 @@ class MetamaskService {
                     to: tokenAddress,
                     data: depositSignature,
                 },
-                'metamask'
+                'metamask',
+                callback
             );
         };
-
         return {
             action: contributeTransaction,
             signature: depositSignature,
@@ -170,7 +170,7 @@ class MetamaskService {
 
 
     createTokenTransaction = ({ data, tokenAddress, walletAddress, method, contractName, callback, withdraw, stake }) => {
-        const contributeData = this.getContributeTransaction({ data, tokenAddress, walletAddress, method, contractName, withdraw, stake });
+        const contributeData = this.getContributeTransaction({ data, tokenAddress, walletAddress, method, contractName, withdraw, stake, callback });
 
         let transaction = {}
 
@@ -181,7 +181,7 @@ class MetamaskService {
                 to: tokenAddress,
                 data: contributeData.signature,
                 action: contributeData.action,
-                onCoplete: callback
+                onComplete: callback
             };
         } else {
             transaction = {
@@ -191,7 +191,7 @@ class MetamaskService {
                 data: contributeData.signature,
                 action: contributeData.action,
                 ethValue: data,
-                onCoplete: callback
+                onComplete: callback
             };
         }
 
@@ -219,7 +219,8 @@ class MetamaskService {
                     to: ContractDetails[contractName].ADDRESS,
                     data: approveSignature,
                 },
-                'metamask'
+                'metamask',
+                callback
             );
         };
 
@@ -229,7 +230,7 @@ class MetamaskService {
             to: ContractDetails[contractName].ADDRESS,
             data: approveSignature,
             action: approveTransaction,
-            onCoplete: callback
+            onComplete: callback
         };
 
         this.createTransactionObj(transaction, walletAddress)
@@ -265,25 +266,11 @@ class MetamaskService {
 
         transaction
             .action(wallet)
-            .then((result) => {
-                if (transaction.onCoplete) {
-                    setTimeout(() => {
-                        transaction.onCoplete(true)
-                    }, 1000)
-                }
-            })
-            .catch(err => {
-                if (transaction.onCoplete) {
-                    setTimeout(() => {
-                        transaction.onCoplete(false)
-                    }, 1000)
-                }
-            })
     }
 
 
 
-    sendTransaction(transactionConfig, provider) {
+    sendTransaction(transactionConfig, provider, callback) {
         if (provider) {
             this.Web3Provider.eth.setProvider(this.providers[provider]);
         }
@@ -317,9 +304,18 @@ class MetamaskService {
                 .then(
                     (result) => {
                         console.log(result);
+                        if (callback) {
+                            setTimeout(() => {
+                                callback(true)
+                            }, 1000)
+                        }
                     },
                     (err) => {
-                        console.log(err);
+                        if (callback) {
+                            setTimeout(() => {
+                                callback(false)
+                            }, 1000)
+                        }
                     },
                 )
                 .finally(() => {

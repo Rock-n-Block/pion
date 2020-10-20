@@ -91,9 +91,7 @@ const PionV2 = () => {
             swapMethod: 'swapTokens',
             contractName: 'PION_SWAP',
             callback: () => {
-                setTimeout(() => {
-                    updateData()
-                }, 1000)
+                updateData()
             }
         })
         setAmount('')
@@ -113,9 +111,7 @@ const PionV2 = () => {
             swapMethod: 'withdrawRemainingTokens',
             contractName: 'PION_SWAP',
             callback: () => {
-                setTimeout(() => {
-                    updateData()
-                }, 1000)
+                updateData()
             },
             withdraw: true
         })

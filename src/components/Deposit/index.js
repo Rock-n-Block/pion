@@ -1,5 +1,6 @@
 import React from 'react';
 import { InputNumber } from 'antd';
+import BigNumber from "bignumber.js"
 
 import './Deposit.scss'
 
@@ -31,7 +32,7 @@ const Deposit = ({ lightTheme, onDeposit, walletBalance, errorCode, isApproved, 
             <div className="deposit__amount">
                 <div className="deposit__amount-head">
                     <span>Enter Amount</span>
-                    <span>Wallet balance: {walletBalance}</span>
+                    <span>Wallet balance: {BigNumber(walletBalance).toFixed()}</span>
                 </div>
                 <div className="deposit__box">
                     <InputNumber type="number" className="deposit__amount-input" max={walletBalance} min={0} placeholder="0.00" value={amount} onChange={handleChangeValue} />

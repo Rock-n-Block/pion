@@ -1,13 +1,12 @@
 import React from 'react';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
-import ContractService from '../../utils/contractService';
-import tokensDecimal from '../../utils/web3/decimals';
 
 import { Deposit, Withdraw, Stats } from '../../components';
+import decimals from '../../utils/web3/decimals';
+import ContractService from '../../utils/contractService';
 
 import './Stake.scss'
-import decimals from '../../utils/web3/decimals';
 
 const Stake = () => {
 
@@ -143,7 +142,10 @@ const Stake = () => {
             .then(res => {
                 setEstimateMaxReward(res)
             })
-            .catch(() => setEstimateMaxReward('0.00'))
+            .catch((err) => {
+                console.log(err)
+                setEstimateMaxReward('0.00')
+            })
     }
 
     const handleCalculateWithdrawReward = (amount) => {

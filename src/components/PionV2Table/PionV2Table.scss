@@ -7,8 +7,14 @@
     padding: 10px 10px 12px;
     border: 1px solid rgba(255, 255, 255, 0.05);
     min-width: 220px;
+    position: relative;
     & + & {
       margin-left: 10px;
+    }
+    &-success {
+      position: absolute;
+      top: 0px;
+      right: 5px;
     }
     &.active {
       background: rgba(255, 255, 255, 0.05);
@@ -63,6 +69,9 @@
         span {
           margin-left: 4px;
           color: $orange;
+        }
+        &:disabled {
+          background: transparent;
         }
       }
     }

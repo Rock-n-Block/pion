@@ -1,5 +1,6 @@
 import React from 'react';
 import { InputNumber } from 'antd';
+import BigNumber from "bignumber.js"
 
 import './Withdraw.scss'
 
@@ -22,13 +23,13 @@ const Withdraw = ({ walletBalance, rewardsClaimed, errorCode, reward, onWithdraw
         onWithdraw(amount)
         setAmount('')
     }
-
+    window.BigNumber = BigNumber
     return (
         <div className="withdraw">
             <div className="deposit__amount">
                 <div className="deposit__amount-head">
                     <span>Enter Amount</span>
-                    <span>Deposited: {walletBalance} (UNI-V2)</span>
+                    <span>Deposited: {BigNumber(walletBalance).toFixed()} (UNI-V2)</span>
                 </div>
                 <div className="deposit__box">
                     <InputNumber type="number" value={amount} max={walletBalance} min={0} className="deposit__amount-input" placeholder="0.00" onChange={handleInputChange} />
