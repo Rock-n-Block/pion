@@ -58,7 +58,7 @@ class ContractService {
 
     estimateMaxReward = (amount) => {
         return new Promise((resolve, reject) => {
-            this.mesonContract.methods.estimateMaxReward(amount)
+            this.mesonContract.methods.estimateMaxReward(BigNumber(amount))
                 .call()
                 .then(res => {
                     resolve(res)
