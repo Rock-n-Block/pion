@@ -7,6 +7,7 @@ import decimals from '../../utils/web3/decimals';
 import ContractService from '../../utils/contractService';
 
 import './Stake.scss'
+import BigNumber from 'bignumber.js';
 
 const Stake = () => {
 

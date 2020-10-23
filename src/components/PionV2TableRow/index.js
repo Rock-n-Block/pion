@@ -27,13 +27,16 @@ const PionV2TableRow = ({ item, lightTheme, handleWithdraw }) => {
     }
 
     React.useEffect(() => {
-        item.items.map((elem, index) => {
-            if (dateCompare(elem.date)) {
-                if ((elem.percent * (index + 2) > +item.withdrawAmount)) {
+        for (let i = 0; i < item.items.length; i++) {
+            if (dateCompare(item.items[i].date)) {
+                if ((item.items[i].percent * (i + 1) >= +item.withdrawAmount)) {
                     setIsWithdraw(true)
+                    return;
                 }
+            } else {
+                setIsWithdraw(false)
             }
-        })
+        }
     }, [item])
 
     return (
@@ -56,7 +59,7 @@ const PionV2TableRow = ({ item, lightTheme, handleWithdraw }) => {
                 {item.items &&
                     item.items.map((elem, index) => {
                         return <div key={index} className={classNames('v2-table__box', {
-                            'active': elem.date * 1000 < new Date().getTime()
+                            'active': dateCompare(elem.date)
                         })}>
                             {elem.percent * (index + 2) <= +item.withdrawAmount && <div className="v2-table__box-success">
                                 {!lightTheme && <img src={isOkImg} />}

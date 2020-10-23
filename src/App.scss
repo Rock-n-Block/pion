@@ -131,6 +131,11 @@ input {
   &::placeholder {
     color: #fff;
   }
+  &:invalid {
+    box-shadow: none !important;
+    outline: none !important;
+    border: none !important;
+  }
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

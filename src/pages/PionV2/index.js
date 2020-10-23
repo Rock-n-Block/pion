@@ -147,7 +147,7 @@ const PionV2 = () => {
                         <span>Wallet balance: {walletBalance}</span>
                     </div>
                     <div className="v2__input deposit__box">
-                        <InputNumber max={walletBalance} type="number" className="deposit__amount-input" placeholder="0.00" value={amount} onChange={(value) => setAmount(value)} />
+                        <InputNumber pattern="[0-9]" max={walletBalance} type="number" className="deposit__amount-input" placeholder="0.00" value={amount} onChange={(value) => setAmount(value)} />
                         <div className="v2__max" onClick={handleSendMax}>Send Max</div>
                     </div>
                 </div>

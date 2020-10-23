@@ -34,7 +34,7 @@ const ModalComponent = () => {
             ]}
         >
             <img src={MetamaskImg} alt="" />
-            <p>{errorMsg}</p>
+            <p dangerouslySetInnerHTML={{ __html: errorMsg }}></p>
         </Modal>
     );
 }

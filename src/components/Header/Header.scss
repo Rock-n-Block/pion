@@ -1,9 +1,11 @@
 .header {
   position: fixed;
+  background: #080807;
   top: 0;
   width: 100%;
   left: 0;
   padding: 20px 0;
+  z-index: 100;
   &__logo {
     cursor: pointer;
   }
@@ -55,6 +57,7 @@
     }
   }
   .header {
+    background: #edf2f7;
     &__metamask {
       span {
         color: #000;

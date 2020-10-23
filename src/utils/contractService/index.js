@@ -251,7 +251,7 @@ class ContractService {
 
     calculateRewardFor = (address, amount) => {
         return new Promise((resolve, reject) => {
-            this.mesonContract.methods.calculateRewardFor(address, amount)
+            this.mesonContract.methods.calculateRewardFor(address, BigNumber(amount))
                 .call()
                 .then(res => {
                     resolve(res)
