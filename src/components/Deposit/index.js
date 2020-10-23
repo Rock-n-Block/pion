@@ -35,7 +35,7 @@ const Deposit = ({ lightTheme, onDeposit, walletBalance, errorCode, isApproved, 
                     <span>Wallet balance: {BigNumber(walletBalance).toFixed()}</span>
                 </div>
                 <div className="deposit__box">
-                    <InputNumber type="number" className="deposit__amount-input" max={walletBalance} min={0} placeholder="0.00" value={amount} onChange={handleChangeValue} />
+                    <InputNumber type="number" className="deposit__amount-input" min={0} placeholder="0.00" value={amount} onChange={handleChangeValue} />
                     <div className="deposit__max" onClick={handleSendMax}>Send Max</div>
                 </div>
             </div>

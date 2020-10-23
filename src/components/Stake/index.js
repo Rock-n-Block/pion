@@ -150,14 +150,18 @@ const Stake = () => {
     }
 
     const handleCalculateWithdrawReward = (amount) => {
-        calculateRewardFor(amount)
-            .then(res => {
-                setCalculatedWithdrawReward(res)
-            })
-            .catch((err) => {
-                console.log(err)
-                setCalculatedWithdrawReward('0.00')
-            })
+        if (amount > amountToWithdraw / Math.pow(10, decimals.UNI_V2)) {
+            setCalculatedWithdrawReward('')
+        } else {
+            calculateRewardFor(amount)
+                .then(res => {
+                    setCalculatedWithdrawReward(res)
+                })
+                .catch((err) => {
+                    console.log(err)
+                    setCalculatedWithdrawReward('0.00')
+                })
+        }
     }
 
     return (

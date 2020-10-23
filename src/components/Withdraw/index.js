@@ -23,7 +23,6 @@ const Withdraw = ({ walletBalance, rewardsClaimed, errorCode, reward, onWithdraw
         onWithdraw(amount)
         setAmount('')
     }
-    window.BigNumber = BigNumber
     return (
         <div className="withdraw">
             <div className="deposit__amount">
@@ -32,7 +31,7 @@ const Withdraw = ({ walletBalance, rewardsClaimed, errorCode, reward, onWithdraw
                     <span>Deposited: {BigNumber(walletBalance).toFixed()} (UNI-V2)</span>
                 </div>
                 <div className="deposit__box">
-                    <InputNumber type="number" value={amount} max={walletBalance} min={0} className="deposit__amount-input" placeholder="0.00" onChange={handleInputChange} />
+                    <InputNumber type="number" value={amount} min={0} className="deposit__amount-input" placeholder="0.00" onChange={handleInputChange} />
                     <div className="deposit__max" onClick={handleSendMax}>Send Max</div>
                 </div>
             </div>

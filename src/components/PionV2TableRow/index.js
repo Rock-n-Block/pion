@@ -38,7 +38,6 @@ const PionV2TableRow = ({ item, lightTheme, handleWithdraw }) => {
             }
         }
     }, [item])
-
     return (
         <div className="v2-table__item">
             <div className="v2-table__item-head">
@@ -48,11 +47,11 @@ const PionV2TableRow = ({ item, lightTheme, handleWithdraw }) => {
                 </div>
                 <div className="v2-table__item-elem">
                     <p>Amount</p>
-                    <span className="bold">{item.amount && numberWithCommas(item.amount / Math.pow(10, decimals.PION))}</span>
+                    <span className="bold">{item.amount && numberWithCommas(BigNumber(item.amount / Math.pow(10, decimals.PION)).toFixed())}</span>
                 </div>
                 <div className="v2-table__item-elem">
                     <p>25%</p>
-                    <span className="bold">{item.percent && numberWithCommas(item.percent / Math.pow(10, decimals.PION))}</span>
+                    <span className="bold">{item.percent && numberWithCommas(BigNumber(item.percent / Math.pow(10, decimals.PION)).toFixed())}</span>
                 </div>
             </div>
             <div className="v2-table__item-content">

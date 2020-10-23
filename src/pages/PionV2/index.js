@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { InputNumber } from 'antd';
+import BigNumber from "bignumber.js"
 
 import ContractService from '../../utils/contractService';
 import { PionV2Table } from '../../components';
@@ -154,7 +155,8 @@ const PionV2 = () => {
                 <div className="v2__text">
                     Exchange your Pion v1 tokens for Pion v2 to start the interaction with the platform. The swap will take place in 4 rounds: you will receive 25% of Pion v2 immediately, the remaining 75% can be taken in equal parts - 25% each month from the date of the swap. The exact withdrawal dates will be indicated on the website.
                 </div>
-                {isApproved ? <button className="btn btn--big" onClick={onSwap} disabled={!amount || errorCode || amount > walletBalance}>SWAP</button> :
+                {isApproved ? <button className="btn btn--big" onClick={onSwap} disabled={!amount || errorCode || amount > walletBalance || (BigNumber(amount).toFixed().split('.')[1] && BigNumber(amount).toFixed().split('.')[1].length > 8)
+                }>SWAP</button> :
                     <button className="btn btn--big" onClick={onApprove} disabled={isApproving}>
                         {isApproving && <img src={Spiner} alt="" />}
                         <span>{isApproving ? 'Waiting' : 'Approve'}</span>
