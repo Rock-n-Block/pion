@@ -57,8 +57,9 @@ class ContractService {
     }
 
     estimateMaxReward = (amount) => {
+        const bigAmount = (BigNumber(amount) * Math.pow(10, decimals.UNI_V2)).toFixed()
         return new Promise((resolve, reject) => {
-            this.mesonContract.methods.estimateMaxReward(BigNumber(amount).toFixed())
+            this.mesonContract.methods.estimateMaxReward(bigAmount)
                 .call()
                 .then(res => {
                     resolve(res)

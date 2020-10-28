@@ -1,13 +1,13 @@
 import React from 'react';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
+import BigNumber from 'bignumber.js';
 
 import { Deposit, Withdraw, Stats } from '../../components';
 import decimals from '../../utils/web3/decimals';
 import ContractService from '../../utils/contractService';
 
 import './Stake.scss'
-import BigNumber from 'bignumber.js';
 
 const Stake = () => {
 
@@ -139,7 +139,7 @@ const Stake = () => {
     }
 
     const handleEstimateMaxReward = (amount) => {
-        contractService.estimateMaxReward(amount * Math.pow(10, decimals.UNI_V2))
+        contractService.estimateMaxReward(BigNumber((amount)))
             .then(res => {
                 setEstimateMaxReward(res)
             })

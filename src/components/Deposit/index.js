@@ -1,5 +1,5 @@
 import React from 'react';
-import { InputNumber } from 'antd';
+import { InputNumber, Input } from 'antd';
 import BigNumber from "bignumber.js"
 
 import './Deposit.scss'
@@ -24,9 +24,9 @@ const Deposit = ({ lightTheme, onDeposit, walletBalance, errorCode, isApproved, 
     const handleChangeValue = (value) => {
         setAmount(value)
 
-        handleEstimateMaxReward(value)
+        handleEstimateMaxReward('' + value)
     }
-
+    window.bignumber = BigNumber
     return (
         <div className="deposit">
             <div className="deposit__amount">

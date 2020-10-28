@@ -4929,7 +4929,7 @@ export default {
         ]
     },
     MESON: {
-        ADDRESS: '0xEb7904f072C4E2a8F10D1AcBF4663FA20eE47f60',
+        ADDRESS: '0xd3E68869830E5Dd96DA399c8B1688509FD597DF2',
         ABI: [
             {
                 "constant": false,
@@ -6696,6 +6696,4 @@ export default {
             }
         ]
     }
-
-
 }
